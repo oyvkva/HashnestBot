@@ -1,0 +1,89 @@
+<% provide(:title, "Market") %>
+    <h1>Market</h1>
+    <p>
+      This is the market
+    </p>
+<%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+<%       api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
+      @test = api.currency_market_orders "19"
+      @purchase = @test["purchase"]
+      @sale = @test["sale"]
+      totalSaleQuantity = 0
+      totalSaleAmount = 0
+      totalBuyQuantity = 0
+      totalBuyAmount = 0
+      spread = 0
+      Order.delete_all
+      activeOrders = api.order_active "19"
+      api.quick_revoke "19", "sale"
+      api.quick_revoke "19", "purchase"
+	%>
+   
+   <% @purchase.each do |key2| 
+
+   	amount = Integer(key2["amount"])
+   	price = Float(key2["ppc"])
+   	ordertype = String(key2["category"])
+
+   	test = Order.new(price: price, amount: amount, ordertype: ordertype)
+   	test.save
+   	if price > 0.0002
+      totalBuyQuantity = totalBuyQuantity + amount
+      totalBuyAmount = totalBuyAmount + Float(key2["ppc"]) * Float(amount)
+   end
+   end %>
+
+   <% @sale.each do |key2| 
+
+      amount = Integer(key2["amount"])
+      price = Float(key2["ppc"])
+      ordertype = String(key2["category"])
+
+      test = Order.new(price: price, amount: amount, ordertype: ordertype)
+      test.save
+      if price < 0.0016
+      totalSaleQuantity = totalSaleQuantity + amount
+      totalSaleAmount = totalSaleAmount + Float(key2["ppc"]) * Float(amount)
+   end
+   end %>
+
+   <br>
+   <br>
+   The previous active orders: <%= activeOrders %>
+   <br>
+   <br>
+   <% bestBuyPrice = Order.where(:ordertype => "purchase").maximum(:price) %>
+   Highest buyer price: <%= bestBuyPrice %><br>
+   Total hash wanted bought: <%= totalBuyQuantity %><br>
+   Total bitcoins locked: <%= totalBuyAmount %><br>
+   <br>
+   <br>
+
+   <% bestSalePrice = Order.where(:ordertype => "sale").minimum(:price) 
+   spread = (bestSalePrice - bestBuyPrice) * 1000000
+   %>
+   Lowest seller price: <%= bestSalePrice %><br>
+   Total hash wanted sold: <%= totalSaleQuantity %><br>
+   Total bitcoins worth of sales: <%= totalSaleAmount %><br>
+   <br>
+   Spread: <%= spread %>
+   <br>
+   Open markets:
+   <% openMarkets = api.currency_markets 
+   if spread > 5
+      newOrder = api.trade "19", "purchase", 10, bestBuyPrice + 0.00000001
+      newOrder2 = api.trade "19", "sale", 10, bestSalePrice - 0.00000001
+      %>
+      <%= openMarkets %>
+      <br><br>
+      The new order:
+      <%= newOrder %><br><br>
+      The other order:
+      <%= newOrder2 %>
+   <% end %>
+
+<%= line_chart Order.group_by_day(:created_at).count %>
+<br>
+<br>
+</body>
+</html>

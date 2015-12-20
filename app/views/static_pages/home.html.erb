@@ -1,0 +1,17 @@
+<% provide(:title, "Home") %>
+<%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+    <h1>Home</h1>
+    <p>
+      This is the home page.
+      <% hei = adding 4,7324 %>
+
+      <br>
+      <br>
+      The sum is: <%= hei %>
+      <%= pie_chart Order.group(:ordertype).count %>
+      <br>
+      <br>
+      <%= line_chart Order.group_by_day(:created_at).count %>
+    </p>
+  </body>
+</html>
