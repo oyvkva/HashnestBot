@@ -11,7 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151220113524) do
+ActiveRecord::Schema.define(version: 20151221143520) do
+
+  create_table "btcusds", force: :cascade do |t|
+    t.float    "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "datasets", force: :cascade do |t|
+    t.integer  "difficulty", limit: 8
+    t.float    "btc_price"
+    t.float    "s3_btc"
+    t.float    "s4_btc"
+    t.float    "s5_btc"
+    t.float    "s7_btc"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
 
   create_table "orders", force: :cascade do |t|
     t.float    "price"
@@ -19,6 +36,16 @@ ActiveRecord::Schema.define(version: 20151220113524) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "ordertype"
+    t.string   "market"
+  end
+
+  create_table "prices", force: :cascade do |t|
+    t.string   "market"
+    t.float    "btc_price"
+    t.float    "usd_price"
+    t.float    "return"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

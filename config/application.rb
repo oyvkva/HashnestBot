@@ -7,6 +7,11 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 module HashApp
+    S3_MAINTENANCE = 0.00192
+    S4_MAINTENANCE = 0.001625
+    S5_MAINTENANCE = 0.001175
+    S7_MAINTENANCE = 0.000580
+    
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

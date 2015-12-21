@@ -14,6 +14,7 @@ gem 'angularjs-rails'
 gem 'chart-js-rails'
 gem "chartkick"
 gem 'dateslices'
+gem 'roo'
 
 group :development, :test do
   gem 'sqlite3',     '1.3.9'

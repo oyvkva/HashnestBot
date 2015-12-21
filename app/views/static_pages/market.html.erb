@@ -4,16 +4,14 @@
       This is the market
     </p>
 <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
-<%       api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-      @test = api.currency_market_orders "19"
-      @purchase = @test["purchase"]
-      @sale = @test["sale"]
+<%       
+      
       totalSaleQuantity = 0
       totalSaleAmount = 0
       totalBuyQuantity = 0
       totalBuyAmount = 0
       spread = 0
-      Order.delete_all
+      #O
       activeOrders = api.order_active "19"
       api.quick_revoke "19", "sale"
       api.quick_revoke "19", "purchase"
@@ -82,7 +80,8 @@
       <%= newOrder2 %>
    <% end %>
 
-<%= line_chart Order.group_by_day(:created_at).count %>
+
+
 <br>
 <br>
 </body>
