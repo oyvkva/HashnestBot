@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151221143520) do
+ActiveRecord::Schema.define(version: 20151221195957) do
 
   create_table "btcusds", force: :cascade do |t|
     t.float    "price"
@@ -20,14 +20,22 @@ ActiveRecord::Schema.define(version: 20151221143520) do
   end
 
   create_table "datasets", force: :cascade do |t|
-    t.integer  "difficulty", limit: 8
+    t.integer  "difficulty",    limit: 8
     t.float    "btc_price"
     t.float    "s3_btc"
     t.float    "s4_btc"
     t.float    "s5_btc"
     t.float    "s7_btc"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.float    "s3_buyVolume"
+    t.float    "s3_sellVolume"
+    t.float    "s4_buyVolume"
+    t.float    "s4_sellVolume"
+    t.float    "s5_buyVolume"
+    t.float    "s5_sellVolume"
+    t.float    "s7_buyVolume"
+    t.float    "s7_sellVolume"
   end
 
   create_table "orders", force: :cascade do |t|

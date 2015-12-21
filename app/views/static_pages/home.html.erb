@@ -4,10 +4,11 @@
     <p>
       This is the home page.
       <% 
-      #updateDates
+      #updateDatesDataset
       #fetch_excel_data
+      
       #updateOrdersDatabase
-
+      #updateDataset
       originalS4Price = 0.00082
       originalS5Price = 0.0014
 
@@ -15,10 +16,7 @@
 
       <br>
       <br>
-      The sum is:  updateDataset <br>
-      The sale volume is: <%= saleVolume %><br>
-      The buy volume is: <%= buyVolume %><br>
-      <br>
+  
 
 
         <%
@@ -33,6 +31,25 @@
 
         <%= line_chart coolData, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
 
+        <br>
+        <br>
+        <h2> Volumes </h2>
+
+        <%
+        coolData = [
+        {name: "s3 buy", data: Dataset.group_by_minute( :created_at, "avg", "s3_buyVolume")},
+        {name: "s3 sell", data: Dataset.group_by_minute( :created_at, "avg", "s3_sellVolume")},
+        {name: "s4 buy", data: Dataset.group_by_minute( :created_at, "avg", "s4_buyVolume")},
+          {name: "s4 sell", data: Dataset.group_by_minute( :created_at, "avg", "s4_sellVolume")},
+          {name: "s5 buy", data: Dataset.group_by_minute( :created_at, "avg", "s5_buyVolume")},
+        {name: "s5 sell", data: Dataset.group_by_minute( :created_at, "avg", "s5_sellVolume")},
+        {name: "s7 buy", data: Dataset.group_by_minute( :created_at, "avg", "s7_buyVolume")},
+          {name: "s7 sell", data: Dataset.group_by_minute( :created_at, "avg", "s7_sellVolume")}
+        ]
+
+        %>
+
+        <%= line_chart coolData %>
 
 
       <br>
