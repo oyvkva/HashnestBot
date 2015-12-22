@@ -23,7 +23,7 @@
 
         <%
         coolData = [
-        {name: "s3", data: Dataset.group_by_day( :created_at, "avg", "s3_btc")},
+        {name: "s3", data: Dataset.group_by_minute( :created_at, "avg", "s3_btc")},
         {name: "s4", data: Dataset.group_by_day( :created_at, "avg", "s4_btc")},
         {name: "s5", data: Dataset.group_by_day( :created_at, "avg", "s5_btc")},
           {name: "s7", data: Dataset.group_by_day( :created_at, "avg", "s7_btc")}
@@ -41,12 +41,7 @@
         coolDataTwo = [
         {name: "s3 buy", data: Dataset.group_by_minute( :created_at, "avg", "s3_buyVolume")},
         {name: "s3 sell", data: Dataset.group_by_minute( :created_at, "avg", "s3_sellVolume")},
-        {name: "s4 buy", data: Dataset.group_by_minute( :created_at, "avg", "s4_buyVolume")},
-          {name: "s4 sell", data: Dataset.group_by_minute( :created_at, "avg", "s4_sellVolume")},
-          {name: "s5 buy", data: Dataset.group_by_minute( :created_at, "avg", "s5_buyVolume")},
-        {name: "s5 sell", data: Dataset.group_by_minute( :created_at, "avg", "s5_sellVolume")},
-        {name: "s7 buy", data: Dataset.group_by_minute( :created_at, "avg", "s7_buyVolume")},
-          {name: "s7 sell", data: Dataset.group_by_minute( :created_at, "avg", "s7_sellVolume")}
+        {name: "s4 buy", data: Dataset.group_by_minute( :created_at, "avg", "s4_buyVolume")}
         ]
 
         %>
