@@ -26,8 +26,9 @@
         {name: "s5", data: Dataset.group_by_day( :created_at, "avg", "s5_btc")},
           {name: "s7", data: Dataset.group_by_day( :created_at, "avg", "s7_btc")}
         ]
-
         %>
+
+        <%= line_chart coolData %>
 
 
       <br>
