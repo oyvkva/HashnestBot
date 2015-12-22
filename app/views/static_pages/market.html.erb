@@ -38,7 +38,7 @@
         <h2> Volumes </h2>
 
         <%
-        coolData = [
+        coolDataTwo = [
         {name: "s3 buy", data: Dataset.group_by_minute( :created_at, "avg", "s3_buyVolume")},
         {name: "s3 sell", data: Dataset.group_by_minute( :created_at, "avg", "s3_sellVolume")},
         {name: "s4 buy", data: Dataset.group_by_minute( :created_at, "avg", "s4_buyVolume")},
@@ -51,7 +51,7 @@
 
         %>
 
-        <%= line_chart coolData %>
+        <%= line_chart coolDataTwo %>
 
 
       <br>
