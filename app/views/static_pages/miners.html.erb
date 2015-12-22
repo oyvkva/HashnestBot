@@ -5,8 +5,8 @@
       This is the market
     </p>
 
-      <% startDate = 123.days.ago.utc 
-        endDate = 15.days.ago.utc
+      <% startDate = 150.days.ago.beginning_of_day 
+        endDate = 20.days.ago.beginning_of_day
         percentDiffChange = 0.03
         percentPriceChange = 0.01
         difficulty = difficultyNow
@@ -27,40 +27,35 @@
       fixedmodel << firstDayPrice
 
       i = 1
-      j = (endDate - startDate).to_i / (24 * 60 * 60)
+      j =  (endDate - startDate) / (24 * 3600)
 
       until i > j  do 
-        daysAgo = 103 - i
+        daysAgo = 150 - i
         difficulty = difficulty * 1.002
         btc_price = btc_price * 1.000
         newProfit = (502914.19/difficulty*btc_price-0.00192)/btc_price
         newCommulative = datamodel[i-1][:commulative] + newProfit
-        newDay = { date: daysAgo.days.ago.utc, difficulty: difficulty, btc_price: btc_price, profit: newProfit, commulative: newCommulative }
+        newDay = { date: daysAgo.days.ago.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfit, commulative: newCommulative }
         datamodel << newDay
-        fixedmodel << { date: daysAgo.days.ago.utc, price: 0.000030 }
-        %>
+        fixedmodel << { date: daysAgo.days.ago.beginning_of_day, price: 0.000030 }
+        
 
-
-      <%
+      i +=1;
+      end
+ 
       return_array = datamodel.map { |h| h.slice(:date, :commulative).values }
       return_fixed = fixedmodel.map { |h| h.slice(:date, :price).values }
 
-      coolData = [
+      coolData = 
+      [
         {name: "s3", data: return_array},
         {name: "s4", data: return_fixed}
         ]
       %>
 
-      
+   
 
-
-      <%
-      puts("Inside the loop i = #$i" )
-      i +=1;
-      end
-      %>
-
-      <%= line_chart coolData, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
+      <%= line_chart coolData, library: {curveType: 'function', pointSize: 0, lineWidth: 3 } %>
       <br>
       <br>
   
@@ -68,19 +63,19 @@
 
 
       <h2>S4 commulative income between <%= startDate %> and <%= endDate %></h2>
-      <% theSet = Dataset.where("created_at >= ?", startDate.utc).where("created_at <= ?", endDate.utc).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
+      <% theSet = Dataset.where("created_at >= ?", startDate).where("created_at <= ?", endDate).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
         sum = 0
         result = theSet.map {|x,y| [x, (sum+=y)]}
         %>
-        <%= result %>
+        <%= area_chart result %>
 
         <h2>S4 profit after selling the S4 between <%= startDate %> and <%= endDate %></h2>
     
       <% 
         sum = 0
 
-        theSet = Dataset.where("created_at >= ?", startDate.utc).where("created_at <= ?", endDate.utc).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
-        theHashPrice = Dataset.where("created_at >= ?", startDate.utc).where("created_at <= ?", endDate.utc).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "s4_btc")
+        theSet = Dataset.where("created_at >= ?", startDate).where("created_at <= ?", endDate).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
+        theHashPrice = Dataset.where("created_at >= ?", startDate).where("created_at <= ?", endDate).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "s4_btc")
         theNewSet = Hash[*theSet.map {|x,y| [x, - theHashPrice.values[0] + (sum+=y)]}.flatten(1)]
         
         finalSet = theNewSet.merge(theHashPrice){ |k, a_value, b_value| a_value + b_value }
