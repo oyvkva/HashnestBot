@@ -5,16 +5,7 @@
       This is the market
     </p>
 
-           <% 
-      #updateDatesDataset
-      #fetch_excel_data
-      
-      #updateOrdersDatabase
-      #updateDataset
-      originalS4Price = 0.00082
-      originalS5Price = 0.0014
-
-      %>
+  
 
       <br>
       <br>
@@ -87,7 +78,7 @@
 
         theSet = Dataset.where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
         theHashPrice = Dataset.where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "s4_btc")
-        theNewSet = Hash[*theSet.map {|x,y| [x, - originalS4Price + (sum+=y)]}.flatten(1)]
+        theNewSet = Hash[*theSet.map {|x,y| [x, - theHashPrice.values[0] + (sum+=y)]}.flatten(1)]
         
         finalSet = theNewSet.merge(theHashPrice){ |k, a_value, b_value| a_value + b_value }
         %>

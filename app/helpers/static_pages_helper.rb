@@ -84,6 +84,14 @@ module StaticPagesHelper
     Order.where(:ordertype => "purchase").where(:market => marketID).where("price > ?", bestPrice * 0.5).sum("price * amount")
   end
 
+  def btcPriceNow
+    btc_price = Dataset.group_by_day( :created_at, "avg", "btc_price").values.last
+  end
+
+  def difficultyNow
+    difficulty = Dataset.group_by_day( :created_at, "avg", "difficulty").values.last
+  end 
+
   def updateDatesDataset
     x = 355
     Dataset.all.each do |item|
