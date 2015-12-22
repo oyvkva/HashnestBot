@@ -31,14 +31,14 @@
         <%= line_chart coolData, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
 
 
- 
+    Dataset.group_by_day( :created_at, "avg", '"s7_buyVolume"')
 
 
       <br>
       <h2>BTC-USD</h2>
-      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s5_buyVolume") %>
+      <%= Dataset.group_by_day( :created_at, "avg", '"s5_buyVolume"') %>
       <h2>Difficulty</h2>
-      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s7_buyVolume") %>
+      <%= Dataset.group_by_day( :created_at, "avg", '"s7_buyVolume"') %>
 
       <h2>S3 BTC</h2>
       <%= area_chart Dataset.group_by_day( :created_at, "avg", "s3_btc") %>
