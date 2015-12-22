@@ -4,6 +4,17 @@
     <p>
       This is the market
     </p>
+
+         <% 
+      #updateDatesDataset
+      #fetch_excel_data
+      
+      #updateOrdersDatabase
+      #updateDataset
+      originalS4Price = 0.00082
+      originalS5Price = 0.0014
+
+      %>
 <body>
 
 <%= timeline [
@@ -13,6 +24,78 @@
 ] %>
 
 <%= area_chart Dataset.group_by_day( :created_at, "avg", "btc_price") %>
+
+
+
+    <br>
+      <h2>BTC-USD</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "btc_price") %>
+      <h2>Difficulty</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "difficulty") %>
+
+      <h2>S3 BTC</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s3_btc") %>
+      <h2>S3 USD</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s3_btc * btc_price") %>
+      <h2>S3 return</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.00192)/(s3_btc * btc_price)") %>
+      <h2>S4 BTC</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s4_btc") %>
+      <h2>S4 USD</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s4_btc * btc_price") %>
+      <h2>S4 return</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(s4_btc * btc_price)") %>
+
+      <h2>S4 commulative income</h2>
+      <% theSet = Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
+        sum = 0
+        result = theSet.map {|x,y| [x, (sum+=y)]}
+        %>
+        <%= area_chart result %>
+
+        <h2>S4 profit after selling the S4</h2>
+    
+      <% 
+        sum = 0
+
+        theSet = Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
+        theHashPrice = Dataset.group_by_day( :created_at, "avg", "s4_btc")
+        theNewSet = Hash[*theSet.map {|x,y| [x, - originalS4Price + (sum+=y)]}.flatten(1)]
+        
+        finalSet = theNewSet.merge(theHashPrice){ |k, a_value, b_value| a_value + b_value }
+        %>
+        <%= area_chart finalSet %>
+
+      <h2>S5 BTC</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s5_btc") %>
+      <h2>S5 USD</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s5_btc * btc_price") %>
+      <h2>S5 return</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001175)/(s5_btc * btc_price)") %>
+
+
+
+
+      <h2>S5 commulative income (Need to change so only later dates are used)</h2>
+      <% theSet = Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001175)/(btc_price)")
+        sum = 0
+        result = theSet.map {|x,y| [x, (sum+=y)]}
+        %>
+        <%= area_chart result %>
+
+   
+
+
+      <h2>S7 BTC</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s7_btc") %>
+      <h2>S7 USD</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s7_btc * btc_price") %>
+      <h2>S7 return</h2>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.000580)/(s7_btc * btc_price)") %>
+      <br>
+      <br>
+
+      
 
 <br>
 <br>
