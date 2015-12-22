@@ -7,8 +7,8 @@
       #updateDatesDataset
       #fetch_excel_data
       
-      updateOrdersDatabase
-      updateDataset
+      #updateOrdersDatabase
+      #updateDataset
       originalS4Price = 0.00082
       originalS5Price = 0.0014
 
@@ -24,7 +24,7 @@
         {name: "s3", data: Dataset.group_by_day( :created_at, "avg", "s3_btc")},
         {name: "s4", data: Dataset.group_by_day( :created_at, "avg", "s4_btc")},
         {name: "s5", data: Dataset.group_by_day( :created_at, "avg", "s5_btc")},
-          {name: "s7", data: Dataset.group_by_day( :created_at, "avg", "s7_btc")}
+        {name: "s7", data: Dataset.group_by_day( :created_at, "avg", "s7_btc")}
         ]
         %>
 
