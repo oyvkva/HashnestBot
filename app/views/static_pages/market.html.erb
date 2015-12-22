@@ -5,7 +5,7 @@
       This is the market
     </p>
 
-         <% 
+           <% 
       #updateDatesDataset
       #fetch_excel_data
       
@@ -15,9 +15,13 @@
       originalS5Price = 0.0014
 
       %>
-<body>
 
-<%
+      <br>
+      <br>
+  
+
+
+        <%
         coolData = [
         {name: "s3", data: Dataset.group_by_day( :created_at, "avg", "s3_btc")},
         {name: "s4", data: Dataset.group_by_day( :created_at, "avg", "s4_btc")},
@@ -27,7 +31,8 @@
 
         %>
 
-     
+        <%= line_chart coolData, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
+
         <br>
         <br>
         <h2> Volumes </h2>
@@ -48,11 +53,8 @@
 
         <%= line_chart coolData %>
 
-<%= area_chart Dataset.group_by_day( :created_at, "avg", "btc_price") %>
 
-
-
-    <br>
+      <br>
       <h2>BTC-USD</h2>
       <%= area_chart Dataset.group_by_day( :created_at, "avg", "btc_price") %>
       <h2>Difficulty</h2>
@@ -119,10 +121,6 @@
       <%= area_chart Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.000580)/(s7_btc * btc_price)") %>
       <br>
       <br>
-
-
-
-<br>
-<br>
-</body>
+    </p>
+  </body>
 </html>
