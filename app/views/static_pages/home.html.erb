@@ -36,9 +36,9 @@
 
       <br>
       <h2>BTC-USD</h2>
-      <%= area_chart Dataset.group_by_day( :created_at, "avg", "btc_price") %>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s5_buyVolume") %>
       <h2>Difficulty</h2>
-      <%= area_chart Dataset.group_by_day( :created_at, "avg", "difficulty") %>
+      <%= area_chart Dataset.group_by_day( :created_at, "avg", "s7_buyVolume") %>
 
       <h2>S3 BTC</h2>
       <%= area_chart Dataset.group_by_day( :created_at, "avg", "s3_btc") %>
