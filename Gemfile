@@ -10,8 +10,6 @@ gem 'jbuilder',     '2.2.3'
 gem 'sdoc',         '0.4.0', group: :doc
 gem 'hashnest', github: 'yinchangxin/hashnest-api'
 gem 'irbtools', require: 'irbtools/binding'
-gem 'angularjs-rails'
-gem 'chart-js-rails'
 gem "chartkick"
 gem 'dateslices'
 gem 'roo'
