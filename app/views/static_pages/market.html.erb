@@ -13,6 +13,8 @@
 
 
         <%
+        sendMail
+        
         coolData = [
         {name: "s3", data: Dataset.group_by_day( :created_at, "avg", "s3_btc")},
         {name: "s4", data: Dataset.group_by_day( :created_at, "avg", "s4_btc")},

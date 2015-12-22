@@ -101,6 +101,10 @@ module StaticPagesHelper
     end
   end
 
+  def sendMail
+    UserMailer.price_notifiaction.deliver_now
+  end
+
 
 
 
