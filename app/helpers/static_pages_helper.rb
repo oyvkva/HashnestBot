@@ -53,14 +53,14 @@ module StaticPagesHelper
     s5_btc = (Order.where(:ordertype => "purchase").where(:market => "19").maximum(:price) + Order.where(:ordertype => "sale").where(:market => "19").minimum(:price)) / 2.0
     s4_btc = (Order.where(:ordertype => "purchase").where(:market => "18").maximum(:price) + Order.where(:ordertype => "sale").where(:market => "18").minimum(:price)) / 2.0
     s3_btc = (Order.where(:ordertype => "purchase").where(:market => "15").maximum(:price) + Order.where(:ordertype => "sale").where(:market => "15").minimum(:price)) / 2.0 
-    s3_buyVolume = buyVolume "15"
-    s4_buyVolume = buyVolume "18"
-    s5_buyVolume = buyVolume "19"
-    s7_buyVolume = buyVolume "20"
-    s3_sellVolume = sellVolume "15"
-    s4_sellVolume = sellVolume "18"
-    s5_sellVolume = sellVolume "19"
-    s7_sellVolume = sellVolume "20"
+    s3_buyvolume = buyVolume "15"
+    s4_buyvolume = buyVolume "18"
+    s5_buyvolume = buyVolume "19"
+    s7_buyvolume = buyVolume "20"
+    s3_sellvolume = sellVolume "15"
+    s4_sellvolume = sellVolume "18"
+    s5_sellvolume = sellVolume "19"
+    s7_sellvolume = sellVolume "20"
 
 
 
@@ -69,7 +69,7 @@ module StaticPagesHelper
 
     btc_price = ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"]
     difficulty = ActiveSupport::JSON.decode(open("https://blockexplorer.com/api/status?q=getDifficulty").read)["difficulty"]
-    test = Dataset.create(difficulty: difficulty, btc_price: btc_price, s3_btc: s3_btc, s4_btc: s4_btc, s5_btc: s5_btc, s7_btc: s7_btc, s3_buyVolume: s3_buyVolume, s3_sellVolume: s3_sellVolume, s4_buyVolume: s4_buyVolume, s4_sellVolume: s4_sellVolume, s5_buyVolume: s5_buyVolume, s5_sellVolume: s5_sellVolume, s7_buyVolume: s7_buyVolume, s7_sellVolume: s7_sellVolume)
+    test = Dataset.create(difficulty: difficulty, btc_price: btc_price, s3_btc: s3_btc, s4_btc: s4_btc, s5_btc: s5_btc, s7_btc: s7_btc, s3_buyvolume: s3_buyvolume, s3_sellvolume: s3_sellvolume, s4_buyvolume: s4_buyvolume, s4_sellvolume: s4_sellvolume, s5_buyvolume: s5_buyvolume, s5_sellvolume: s5_sellvolume, s7_buyvolume: s7_buyvolume, s7_sellvolume: s7_sellvolume)
   end
 
 
