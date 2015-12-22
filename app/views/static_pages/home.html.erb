@@ -28,23 +28,10 @@
         ]
         %>
 
-        <%= line_chart coolData %>
+        <%= line_chart coolData, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
 
-        <%
-        coolDataTwo = [
-        {name: "s3 buy", data: Dataset.group_by_minute( :created_at, "avg", "s3_buyVolume")},
-        {name: "s3 sell", data: Dataset.group_by_minute( :created_at, "avg", "s3_sellVolume")},
-        {name: "s4 buy", data: Dataset.group_by_minute( :created_at, "avg", "s4_buyVolume")},
-          {name: "s4 sell", data: Dataset.group_by_minute( :created_at, "avg", "s4_sellVolume")},
-          {name: "s5 buy", data: Dataset.group_by_minute( :created_at, "avg", "s5_buyVolume")},
-        {name: "s5 sell", data: Dataset.group_by_minute( :created_at, "avg", "s5_sellVolume")},
-        {name: "s7 buy", data: Dataset.group_by_minute( :created_at, "avg", "s7_buyVolume")},
-          {name: "s7 sell", data: Dataset.group_by_minute( :created_at, "avg", "s7_sellVolume")}
-        ]
 
-        %>
-
-        <%= line_chart coolDataTwo %>
+ 
 
 
       <br>
