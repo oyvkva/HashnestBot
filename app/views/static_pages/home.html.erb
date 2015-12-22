@@ -65,7 +65,7 @@
       <h2>S4 USD</h2>
       <%= area_chart Dataset.group_by_day( :created_at, "avg", "s4_btc * btc_price") %>
       <h2>S4 return</h2>
-      <%= area_chart Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(s4_btc * btc_price)") %>
+      <%= area_chart Dataset..where(:s4_btc => "purchase").group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(s4_btc * btc_price)") %>
 
       <h2>S4 commulative income</h2>
       <% theSet = Dataset.group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
