@@ -5,7 +5,7 @@ class UserMailer < ApplicationMailer
   #
   #   en.user_mailer.price_notifiaction.subject
   #
-  def price_notifiaction
-    mail to: "oyvind@kvanes.no", subject: "Price notification"
+  def price_notifiaction(new_price)
+    mail to: "oyvind@kvanes.no", subject: "Price notification, price is #{new_price}"
   end
 end

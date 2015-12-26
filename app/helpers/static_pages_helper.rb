@@ -26,7 +26,7 @@ module StaticPagesHelper
     fillOrders @S4orders, "18"
     fillOrders @S3orders, "15"
 
-    checkPrices
+    
     
   end
 
@@ -72,6 +72,9 @@ module StaticPagesHelper
     btc_price = ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"]
     difficulty = ActiveSupport::JSON.decode(open("https://blockexplorer.com/api/status?q=getDifficulty").read)["difficulty"]
     test = Dataset.create(difficulty: difficulty, btc_price: btc_price, s3_btc: s3_btc, s4_btc: s4_btc, s5_btc: s5_btc, s7_btc: s7_btc, s3_buyvolume: s3_buyvolume, s3_sellvolume: s3_sellvolume, s4_buyvolume: s4_buyvolume, s4_sellvolume: s4_sellvolume, s5_buyvolume: s5_buyvolume, s5_sellvolume: s5_sellvolume, s7_buyvolume: s7_buyvolume, s7_sellvolume: s7_sellvolume)
+  
+    checkPrices
+
   end
 
 
@@ -103,16 +106,18 @@ module StaticPagesHelper
     end
   end
 
-  def sendMail
-    UserMailer.price_notifiaction.deliver_now
+  def sendMail(new_price)
+    UserMailer.price_notifiaction.deliver_now new_price
   end
 
   def checkPrices
     if (Dataset.last.s7_btc > Pricepoint.where(:name => "s7_max").last.price)
-      sendMail
+      sendMail Dataset.last.s7_btc
+      Pricepoint.create(name: "s7_max", price: Dataset.last.s7_btc)
     end
     if (Dataset.last.s7_btc < Pricepoint.where(:name => "s7_min").last.price)
-      sendMail
+      sendMail Dataset.last.s7_btc
+      Pricepoint.create(name: "s7_min", price: Dataset.last.s7_btc)
     end
   end
 
