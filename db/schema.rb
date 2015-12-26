@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151222132230) do
+ActiveRecord::Schema.define(version: 20151226104403) do
 
   create_table "datasets", force: :cascade do |t|
     t.integer  "difficulty",    limit: 8
@@ -39,6 +39,13 @@ ActiveRecord::Schema.define(version: 20151222132230) do
     t.datetime "updated_at", null: false
     t.string   "ordertype"
     t.string   "market"
+  end
+
+  create_table "pricepoints", force: :cascade do |t|
+    t.string   "name"
+    t.float    "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

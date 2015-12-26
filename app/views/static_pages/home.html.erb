@@ -7,6 +7,12 @@
       <br>
       <br>
   
+      <% count = Dataset.count %>
+          
+      <%= Dataset.where(:created_at => (1.day.ago.beginning_of_day..1.day.ago.end_of_day)) %>
+        Will create a model of LastWarningValues :)
+        <%= Dataset.find(count - 4) %>
+
 
 
         <%
