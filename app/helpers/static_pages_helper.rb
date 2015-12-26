@@ -107,7 +107,7 @@ module StaticPagesHelper
   end
 
   def sendMail(new_price)
-    UserMailer.price_notifiaction.deliver_now new_price
+    UserMailer.price_notifiaction new_price
   end
 
   def checkPrices
