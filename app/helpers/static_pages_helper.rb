@@ -25,6 +25,8 @@ module StaticPagesHelper
     fillOrders @S5orders, "19"
     fillOrders @S4orders, "18"
     fillOrders @S3orders, "15"
+
+    checkPrices
     
   end
 
