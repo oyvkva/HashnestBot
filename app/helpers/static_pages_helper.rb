@@ -108,10 +108,10 @@ module StaticPagesHelper
   end
 
   def checkPrices
-    if (Dataset.last.s5_btc > Pricepoint.where(:name => "s7_max").last.price)
+    if (Dataset.last.s7_btc > Pricepoint.where(:name => "s7_max").last.price)
       sendMail
     end
-    if (Dataset.last.s5_btc < Pricepoint.where(:name => "s7_min").last.price)
+    if (Dataset.last.s7_btc < Pricepoint.where(:name => "s7_min").last.price)
       sendMail
     end
   end
