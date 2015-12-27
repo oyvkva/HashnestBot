@@ -111,14 +111,15 @@ module StaticPagesHelper
   end
 
   def checkPrices
-
     notificationTypes = ["s7_max", "s7_min","s5_max", "s5_min","s4_max", "s4_min","s3_max", "s3_min"]
     notificationTypes.each do |p|
-      if (Dataset.last.s7_btc > Pricepoint.where(:name => p).last.price)
-        string = p[0...-3] + "btc"
-        sendMail Dataset.last.send("#{string}"),string
+      type = p[-3, 3]
+      string = p[0...-3] + "btc"
+      price = Dataset.last.send("#{string}")
+      if ((price > Pricepoint.where(:name => p).last.price && type == "max") || (price < Pricepoint.where(:name => p).last.price && type == "min"))
+        sendMail price,string + type
         Pricepoint.where(:name => p).last.destroy
-        Pricepoint.create(name: p, price: Dataset.last.send("#{string}"))
+        Pricepoint.create(name: p, price: price)
       end
 
     end
