@@ -106,18 +106,31 @@ module StaticPagesHelper
     end
   end
 
-  def sendMail(new_price)
-    UserMailer.price_notifiaction(new_price).deliver_now
+  def sendMail(new_price,string)
+    UserMailer.price_notifiaction(new_price,string).deliver_now
   end
 
   def checkPrices
-    if (Dataset.last.s7_btc > Pricepoint.where(:name => "s7_max").last.price)
-      sendMail Dataset.last.s7_btc
-      Pricepoint.create(name: "s7_max", price: Dataset.last.s7_btc)
+
+    notificationTypes = ["s7_max", "s7_min","s5_max", "s5_min","s4_max", "s4_min","s3_max", "s3_min"]
+    notificationTypes.each do |p|
+      if (Dataset.last.s7_btc > Pricepoint.where(:name => p).last.price)
+        string = p[0...-3] + "btc"
+        sendMail Dataset.last.send("#{string}"),string
+        Pricepoint.where(:name => p).last.destroy
+        Pricepoint.create(name: p, price: Dataset.last.send("#{string}"))
+      end
+
     end
-    if (Dataset.last.s7_btc < Pricepoint.where(:name => "s7_min").last.price)
-      sendMail Dataset.last.s7_btc
-      Pricepoint.create(name: "s7_min", price: Dataset.last.s7_btc)
+
+  end
+
+  def flushAndAddPriceNotifications
+    Pricepoint.delete_all
+    notificationTypes = ["s7_max", "s7_min","s5_max", "s5_min","s4_max", "s4_min","s3_max", "s3_min"]
+    notificationTypes.each do |p|
+      string = p[0...-3] + "btc"
+      Pricepoint.create(name: p, price: Dataset.last.send("#{string}"))
     end
   end
 
