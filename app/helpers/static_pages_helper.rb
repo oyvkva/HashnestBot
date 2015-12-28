@@ -164,10 +164,10 @@ module StaticPagesHelper
     btc_price = Float(ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"])
     hash_price = ActiveSupport::JSON.decode(open("https://blockchain.info/q/hashrate").read) / 1e6
 
-    Pricepoint.create(name: namebtc + "btc_max", price: btc_price * 1.01)
-    Pricepoint.create(name: namebtc + "btc_min", price: btc_price * 0.99)
-    Pricepoint.create(name: namehash + "hash_max", price: hash_price * 1.01)
-    Pricepoint.create(name: namehash + "hash_min", price: hash_price * 0.99)
+    Pricepoint.create(name: "btc_max", price: btc_price * 1.01)
+    Pricepoint.create(name: "btc_min", price: btc_price * 0.99)
+    Pricepoint.create(name: "hash_max", price: hash_price * 1.01)
+    Pricepoint.create(name: "hash_min", price: hash_price * 0.99)
   end
 
 
