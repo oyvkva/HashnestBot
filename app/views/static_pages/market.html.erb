@@ -11,7 +11,6 @@
 
       <% 
 
-        updateOrdersDatabase
         sale = Order.where(:ordertype => "sale").where(:market => "20")
         purchase = Order.where(:ordertype => "purchase").where(:market => "20")
         pcum = 0
