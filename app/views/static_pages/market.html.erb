@@ -8,12 +8,323 @@
   
 
       <br>
+
+      <% 
+
+        updateOrdersDatabase
+        sale = Order.where(:ordertype => "sale").where(:market => "20")
+        purchase = Order.where(:ordertype => "purchase").where(:market => "20")
+        pcum = 0
+        scum = 0
+       %>
+      <br>
+
+      <h2> S7 market </h2>
+      <table>
+      <td valign="top">
+
+      <table>
+     
+        <tr>
+          <th>Sale</th>
+          </tr>
+        <% 
+        sale.each do |s|
+          scum = scum + s.amount  
+          if (s.price < 0.0011 && s.amount > 50)
+          %>
+          <font size=5>
+          <tr>
+         <td width = 150>
+          <% if s.amount > 3000 %>
+          <b>
+          <% end %>
+
+         <%= s.price %></td>
+         
+
+         <td width = 100><%= s.amount %></td>
+         <td width = 150><i><%= scum %></i></td>
+        </tr>
+        </b>
+       
+       <% 
+        end
+       end %>
+       </tr>
+        
+        </table>
+        </td>
+        <th></th><td>
+        <td valign="top">
+        <table>
+
+        <tr>
+          <th>Purchase</th>
+          
+        <% purchase.each do |s| 
+          pcum = pcum + s.amount
+            if (s.price > 0.0001 && s.amount > 50)
+          %>
+
+        
+        <tr>
+         <td width = 150>
+          <% if s.amount > 3000 %>
+          <b>
+          <% end %>
+         <%= s.price %></td>
+          <td width = 100><%= s.amount %></td>
+         <td width = 150><i><%= pcum %></i></td>
+          </tr>
+       <% 
+        end
+       end %>
+       </tr>
+        </table>
+        </td>
+        </table>
+      <br>
+  
+      <br>
+
+            <% 
+
+        sale = Order.where(:ordertype => "sale").where(:market => "19")
+        purchase = Order.where(:ordertype => "purchase").where(:market => "19")
+        pcum = 0
+        scum = 0
+       %>
+
+      <h2> S5 market </h2>
+      <table>
+      <td valign="top">
+
+      <table>
+     
+        <tr>
+          <th>Sale</th>
+          </tr>
+        <% 
+        sale.each do |s|
+          scum = scum + s.amount  
+          if (s.price < 0.00055 && s.amount > 50)
+          %>
+          <font size=5>
+          <tr>
+         <td width = 150>
+          <% if s.amount > 3000 %>
+          <b>
+          <% end %>
+
+         <%= s.price %></td>
+         
+
+         <td width = 100><%= s.amount %></td>
+         <td width = 150><i><%= scum %></i></td>
+        </tr>
+        </b>
+       
+       <% 
+        end
+       end %>
+       </tr>
+        
+        </table>
+        </td>
+        <th></th><td>
+        <td valign="top">
+        <table>
+
+        <tr>
+          <th>Purchase</th>
+          
+        <% purchase.each do |s| 
+          pcum = pcum + s.amount
+            if (s.price > 0.00005 && s.amount > 50)
+          %>
+
+        
+        <tr>
+         <td width = 150>
+          <% if s.amount > 3000 %>
+          <b>
+          <% end %>
+         <%= s.price %></td>
+          <td width = 100><%= s.amount %></td>
+         <td width = 150><i><%= pcum %></i></td>
+          </tr>
+       <% 
+        end
+       end %>
+       </tr>
+        </table>
+        </td>
+        </table>
+      <br>
+  
       <br>
   
 
+          <% 
+
+        sale = Order.where(:ordertype => "sale").where(:market => "18")
+        purchase = Order.where(:ordertype => "purchase").where(:market => "18")
+        pcum = 0
+        scum = 0
+       %>
+
+      <h2> S4 market </h2>
+      <table>
+      <td valign="top">
+
+      <table>
+     
+        <tr>
+          <th>Sale</th>
+          </tr>
+        <% 
+        sale.each do |s|
+          scum = scum + s.amount  
+          if (s.price < 0.0004 && s.amount > 50)
+          %>
+          <font size=5>
+          <tr>
+         <td width = 150>
+          <% if s.amount > 3000 %>
+          <b>
+          <% end %>
+
+         <%= s.price %></td>
+         
+
+         <td width = 100><%= s.amount %></td>
+         <td width = 150><i><%= scum %></i></td>
+        </tr>
+        </b>
+       
+       <% 
+        end
+       end %>
+       </tr>
+        
+        </table>
+        </td>
+        <th></th><td>
+        <td valign="top">
+        <table>
+
+        <tr>
+          <th>Purchase</th>
+          
+        <% purchase.each do |s| 
+          pcum = pcum + s.amount
+            if (s.price > 0.00001 && s.amount > 50)
+          %>
+
+        
+        <tr>
+         <td width = 150>
+          <% if s.amount > 3000 %>
+          <b>
+          <% end %>
+         <%= s.price %></td>
+          <td width = 100><%= s.amount %></td>
+         <td width = 150><i><%= pcum %></i></td>
+          </tr>
+       <% 
+        end
+       end %>
+       </tr>
+        </table>
+        </td>
+        </table>
+      <br>
+  
+      <br>
+
+
+
+
+                <% 
+
+        sale = Order.where(:ordertype => "sale").where(:market => "15")
+        purchase = Order.where(:ordertype => "purchase").where(:market => "15")
+        pcum = 0
+        scum = 0
+       %>
+
+      <h2> S3 market </h2>
+      <table>
+      <td valign="top">
+
+      <table>
+     
+        <tr>
+          <th>Sale</th>
+          </tr>
+        <% 
+        sale.each do |s|
+          scum = scum + s.amount  
+          if (s.price < 0.00030 && s.amount > 50)
+          %>
+          <font size=5>
+          <tr>
+         <td width = 150>
+          <% if s.amount > 3000 %>
+          <b>
+          <% end %>
+
+         <%= s.price %></td>
+         
+
+         <td width = 100><%= s.amount %></td>
+         <td width = 150><i><%= scum %></i></td>
+        </tr>
+        </b>
+       
+       <% 
+        end
+       end %>
+       </tr>
+        
+        </table>
+        </td>
+        <th></th><td>
+        <td valign="top">
+        <table>
+
+        <tr>
+          <th>Purchase</th>
+          
+        <% purchase.each do |s| 
+          pcum = pcum + s.amount
+            if (s.price > 0.00001 && s.amount > 50)
+          %>
+
+        
+        <tr>
+         <td width = 150>
+          <% if s.amount > 3000 %>
+          <b>
+          <% end %>
+         <%= s.price %></td>
+          <td width = 100><%= s.amount %></td>
+         <td width = 150><i><%= pcum %></i></td>
+          </tr>
+       <% 
+        end
+       end %>
+       </tr>
+        </table>
+        </td>
+        </table>
+      <br>
+  
+      <br>
 
         <%
-        sendMail
+      
         
         coolData = [
         {name: "s3", data: Dataset.group_by_day( :created_at, "avg", "s3_btc")},
@@ -32,10 +343,6 @@
 
         <%
         coolDataTwo = [
-        {name: "s3 buy", data: Dataset.group_by_minute( :created_at, "avg", "s3_buyvolume")},
-        {name: "s3 sell", data: Dataset.group_by_minute( :created_at, "avg", "s3_sellvolume")},
-        {name: "s4 buy", data: Dataset.group_by_minute( :created_at, "avg", "s4_buyvolume")},
-        {name: "s4 sell", data: Dataset.group_by_minute( :created_at, "avg", "s4_sellvolume")},
         {name: "s5 buy", data: Dataset.group_by_minute( :created_at, "avg", "s5_buyvolume")},
         {name: "s5 sell", data: Dataset.group_by_minute( :created_at, "avg", "s5_sellvolume")},
         {name: "s7 buy", data: Dataset.group_by_minute( :created_at, "avg", "s7_buyvolume")},
@@ -44,7 +351,7 @@
 
         %>
 
-        <%= line_chart coolDataTwo %>
+        <%= line_chart coolDataTwo, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
 
 
       <br>

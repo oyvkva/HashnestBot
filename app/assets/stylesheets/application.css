@@ -13,3 +13,8 @@
  *= require_tree .
  *= require_self
  */
+
+
+table td, table td * {
+    vertical-align: top;
+}

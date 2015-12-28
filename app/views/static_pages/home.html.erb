@@ -7,45 +7,52 @@
       <br>
       <br>
   
-      <% count = Dataset.count %>
-          
-      <%= Dataset.where(:created_at => (1.day.ago.beginning_of_day..1.day.ago.end_of_day)) %>
-        Will create a model of LastWarningValues :)
-        <%= Dataset.find(count - 4) %>
 
-
+        <h2> Prices </h2>
 
         <%
         coolData = [
-        {name: "s3", data: Dataset.where("created_at >= ?", 1.day.ago.utc).group_by_minute( :created_at, "avg", "s3_btc")},
-        {name: "s4", data: Dataset.where("created_at >= ?", 1.day.ago.utc).group_by_minute( :created_at, "avg", "s4_btc")},
         {name: "s5", data: Dataset.where("created_at >= ?", 1.day.ago.utc).group_by_minute( :created_at, "avg", "s5_btc")},
           {name: "s7", data: Dataset.where("created_at >= ?", 1.day.ago.utc).group_by_minute( :created_at, "avg", "s7_btc")}
         ]
 
         %>
 
-        <%= line_chart coolData, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
+        <%= line_chart coolData, library: {curveType: "none", pointSize: 0, lineWidth: 3, height: 600} %>
 
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+          <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br
+        <br>
+        <br>
+        <br>
         <br>
         <br>
         <h2> Volumes </h2>
 
         <%
         coolDataTwo = [
-        {name: "s3 buy", data: Dataset.group_by_minute( :created_at, "avg", "s3_buyvolume")},
-        {name: "s3 sell", data: Dataset.group_by_minute( :created_at, "avg", "s3_sellvolume")},
-        {name: "s4 buy", data: Dataset.group_by_minute( :created_at, "avg", "s4_buyvolume")},
-        {name: "s4 sell", data: Dataset.group_by_minute( :created_at, "avg", "s4_sellvolume")},
         {name: "s5 buy", data: Dataset.group_by_minute( :created_at, "avg", "s5_buyvolume")},
         {name: "s5 sell", data: Dataset.group_by_minute( :created_at, "avg", "s5_sellvolume")},
         {name: "s7 buy", data: Dataset.group_by_minute( :created_at, "avg", "s7_buyvolume")},
-          {name: "s7 sell", data: Dataset.group_by_minute( :created_at, "avg", "s7_sellvolume")}
+        {name: "s7 sell", data: Dataset.group_by_minute( :created_at, "avg", "s7_sellvolume")}
         ]
 
         %>
 
-        <%= line_chart coolDataTwo %>
+        <%= line_chart coolDataTwo, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
 
 
       <br>
