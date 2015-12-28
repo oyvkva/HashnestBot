@@ -122,6 +122,33 @@ module StaticPagesHelper
         Pricepoint.create(name: p, price: price)
       end
 
+      btc_price = Float(ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"])
+      hash_price = ActiveSupport::JSON.decode(open("https://blockchain.info/q/hashrate").read) / 1e6
+
+      if (btc_price > Pricepoint.where(:name => "btc_max").last.price)
+        sendMail btc_price,"btc_max"
+        Pricepoint.where(:name => "btc_max").last.destroy
+        Pricepoint.create(name: "btc_max", price: btc_price)
+      end
+
+      if (btc_price < Pricepoint.where(:name => "btc_min").last.price)
+        sendMail btc_price,"btc_min"
+        Pricepoint.where(:name => "btc_min").last.destroy
+        Pricepoint.create(name: "btc_min", price: btc_price)
+      end
+
+      if (hash_price > Pricepoint.where(:name => "hash_max").last.price)
+        sendMail hash_price,"hash_max"
+        Pricepoint.where(:name => "hash_max").last.destroy
+        Pricepoint.create(name: "hash_max", price: hash_price)
+      end
+
+      if (hash_price < Pricepoint.where(:name => "hash_min").last.price)
+        sendMail btc_price,"hash_min"
+        Pricepoint.where(:name => "hash_min").last.destroy
+        Pricepoint.create(name: "hash_min", price: hash_price)
+      end
+
     end
 
   end
@@ -133,9 +160,15 @@ module StaticPagesHelper
       string = p[0...-3] + "btc"
       Pricepoint.create(name: p, price: Dataset.last.send("#{string}"))
     end
+    
+    btc_price = Float(ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"])
+    hash_price = ActiveSupport::JSON.decode(open("https://blockchain.info/q/hashrate").read) / 1e6
+
+    Pricepoint.create(name: namebtc + "btc_max", price: btc_price * 1.01)
+    Pricepoint.create(name: namebtc + "btc_min", price: btc_price * 0.99)
+    Pricepoint.create(name: namehash + "hash_max", price: hash_price * 1.01)
+    Pricepoint.create(name: namehash + "hash_min", price: hash_price * 0.99)
   end
-
-
 
 
 
