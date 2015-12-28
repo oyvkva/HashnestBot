@@ -121,8 +121,9 @@ module StaticPagesHelper
         Pricepoint.where(:name => p).last.destroy
         Pricepoint.create(name: p, price: price)
       end
+    end
 
-      btc_price = Float(ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"])
+          btc_price = Float(ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"])
       hash_price = ActiveSupport::JSON.decode(open("https://blockchain.info/q/hashrate").read) / 1e6
 
       if (btc_price > Pricepoint.where(:name => "btc_max").last.price)
@@ -148,9 +149,7 @@ module StaticPagesHelper
         Pricepoint.where(:name => "hash_min").last.destroy
         Pricepoint.create(name: "hash_min", price: hash_price)
       end
-
-    end
-
+      
   end
 
   def flushAndAddPriceNotifications
