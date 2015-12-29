@@ -163,6 +163,9 @@ module StaticPagesHelper
   end
 
   def flushAndAddPriceNotifications
+    maxInc = 1.01
+    minDec = 0.99
+
     Pricepoint.delete_all
     notificationTypes = ["s7_max", "s7_min","s5_max", "s5_min","s4_max", "s4_min","s3_max", "s3_min"]
     notificationTypes.each do |p|
