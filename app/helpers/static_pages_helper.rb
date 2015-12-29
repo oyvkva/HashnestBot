@@ -111,6 +111,10 @@ module StaticPagesHelper
   end
 
   def checkPrices
+
+    maxInc = 1.01
+    minDec = 0.99
+
     notificationTypes = ["s7_max", "s7_min","s5_max", "s5_min","s4_max", "s4_min","s3_max", "s3_min"]
     notificationTypes.each do |p|
       type = p[-3, 3]
@@ -119,11 +123,17 @@ module StaticPagesHelper
       if ((price > Pricepoint.where(:name => p).last.price && type == "max") || (price < Pricepoint.where(:name => p).last.price && type == "min"))
         sendMail price,string + type
         Pricepoint.where(:name => p).last.destroy
-        Pricepoint.create(name: p, price: price)
+        if (type == "max")
+          Pricepoint.create(name: p, price: price * maxInc)
+        end
+        if (type == "min")
+          Pricepoint.create(name: p, price: price * minDec)
+        end
+        
       end
     end
 
-          btc_price = Float(ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"])
+      btc_price = Float(ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"])
       hash_price = ActiveSupport::JSON.decode(open("https://blockchain.info/q/hashrate").read) / 1e6
 
       if (btc_price > Pricepoint.where(:name => "btc_max").last.price)
@@ -145,7 +155,7 @@ module StaticPagesHelper
       end
 
       if (hash_price < Pricepoint.where(:name => "hash_min").last.price)
-        sendMail btc_price,"hash_min"
+        sendMail hash_price,"hash_min"
         Pricepoint.where(:name => "hash_min").last.destroy
         Pricepoint.create(name: "hash_min", price: hash_price)
       end
@@ -156,17 +166,26 @@ module StaticPagesHelper
     Pricepoint.delete_all
     notificationTypes = ["s7_max", "s7_min","s5_max", "s5_min","s4_max", "s4_min","s3_max", "s3_min"]
     notificationTypes.each do |p|
+      type = p[-3, 3]
       string = p[0...-3] + "btc"
-      Pricepoint.create(name: p, price: Dataset.last.send("#{string}"))
+      price = Dataset.last.send("#{string}")
+
+        if (type == "max")
+          Pricepoint.create(name: p, price: price * maxInc)
+        end
+        if (type == "min")
+          Pricepoint.create(name: p, price: price * minDec)
+        end
+
     end
     
     btc_price = Float(ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"])
     hash_price = ActiveSupport::JSON.decode(open("https://blockchain.info/q/hashrate").read) / 1e6
 
-    Pricepoint.create(name: "btc_max", price: btc_price * 1.01)
-    Pricepoint.create(name: "btc_min", price: btc_price * 0.99)
-    Pricepoint.create(name: "hash_max", price: hash_price * 1.01)
-    Pricepoint.create(name: "hash_min", price: hash_price * 0.99)
+    Pricepoint.create(name: "btc_max", price: btc_price * maxInc)
+    Pricepoint.create(name: "btc_min", price: btc_price * minDec)
+    Pricepoint.create(name: "hash_max", price: hash_price * maxInc)
+    Pricepoint.create(name: "hash_min", price: hash_price * minDec)
   end
 
 
