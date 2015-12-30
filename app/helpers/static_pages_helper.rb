@@ -112,8 +112,8 @@ module StaticPagesHelper
 
   def checkPrices
 
-    maxInc = 1.01
-    minDec = 0.99
+    maxInc = 1.05
+    minDec = 0.95
 
     notificationTypes = ["s7_max", "s7_min","s5_max", "s5_min","s4_max", "s4_min","s3_max", "s3_min"]
     notificationTypes.each do |p|
@@ -139,32 +139,32 @@ module StaticPagesHelper
       if (btc_price > Pricepoint.where(:name => "btc_max").last.price)
         sendMail btc_price,"btc_max"
         Pricepoint.where(:name => "btc_max").last.destroy
-        Pricepoint.create(name: "btc_max", price: btc_price)
+        Pricepoint.create(name: "btc_max", price: btc_price * maxInc)
       end
 
       if (btc_price < Pricepoint.where(:name => "btc_min").last.price)
         sendMail btc_price,"btc_min"
         Pricepoint.where(:name => "btc_min").last.destroy
-        Pricepoint.create(name: "btc_min", price: btc_price)
+        Pricepoint.create(name: "btc_min", price: btc_price * minDec)
       end
 
       if (hash_price > Pricepoint.where(:name => "hash_max").last.price)
         sendMail hash_price,"hash_max"
         Pricepoint.where(:name => "hash_max").last.destroy
-        Pricepoint.create(name: "hash_max", price: hash_price)
+        Pricepoint.create(name: "hash_max", price: hash_price * maxInc)
       end
 
       if (hash_price < Pricepoint.where(:name => "hash_min").last.price)
         sendMail hash_price,"hash_min"
         Pricepoint.where(:name => "hash_min").last.destroy
-        Pricepoint.create(name: "hash_min", price: hash_price)
+        Pricepoint.create(name: "hash_min", price: hash_price * minDec)
       end
       
   end
 
   def flushAndAddPriceNotifications
-    maxInc = 1.01
-    minDec = 0.99
+    maxInc = 1.05
+    minDec = 0.95
 
     Pricepoint.delete_all
     notificationTypes = ["s7_max", "s7_min","s5_max", "s5_min","s4_max", "s4_min","s3_max", "s3_min"]
