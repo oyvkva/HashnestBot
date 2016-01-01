@@ -86,25 +86,35 @@ def startTrading #market, hashLeft, btcLeft
     @api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
 
     market = 19
-    origHashLeft = 0
-    origBtcLeft = 1.5
+    origHashLeft = 5000
+    origBtcLeft = 1.0
 
     @api.quick_revoke market, "sale"
     @api.quick_revoke market, "purchase"
 
 
-    minBuyAmount = 400
-    minSaleAmount = 400
-    middle = 0.000388
+    minBuyAmount = 200
+    minSaleAmount = 200
+    sellMin = 0.00037
+    buyMax = 0.000365
+
+    sellSpread = 0.00005
+    buySpread = 0.00004
+
+
+    middle = (sellMin + buyMax) / 2.0
 
     minOrder = 50
-
-    sellInfo = [0,middle]
-    buyInfo = [0,middle]
 
     btcLeft = origBtcLeft
     hashLeft = origHashLeft
 
+    
+    updatedOrders = updateOrders market,minBuyAmount,minSaleAmount
+    lSale = updatedOrders[0]
+    hBuy = updatedOrders[1]
+    sellInfo = [0,lSale]
+    buyInfo = [0,hBuy]
 
     #Check initial sell and buy
     hashBal = hashBalance market
@@ -112,7 +122,7 @@ def startTrading #market, hashLeft, btcLeft
 
     btcBal = btcBalance
     buyBtc = btcBal[0] - btcLeft
-    buyAmount = (buyBtc / middle).round
+    buyAmount = (buyBtc / buyMax).round
 
     puts "####### Starting trading Middle: #{middle} - Buying: #{buyAmount} - Selling: #{sellAmount} #######"
 
@@ -126,8 +136,7 @@ def startTrading #market, hashLeft, btcLeft
       secSale = updatedOrders[2]
       secBuy = updatedOrders[3]
 
-
-      if (lSale > middle)
+      if (lSale > sellMin)
         #Price is good to sell
 
         if (minSaleAmount > minOrder)
@@ -148,26 +157,27 @@ def startTrading #market, hashLeft, btcLeft
             secSellDiff = (sellInfo[1] - secSale).abs
             if (sellDiff > 0.000000009 || secSellDiff > 0.000000011)
               puts "Sell Price is wrong, changing price..."
-              sellInfo = revokeAndPlaceNewSell market, minBuyAmount, minSaleAmount, middle, sellAmount
+              sellInfo = revokeAndPlaceNewSell market, minBuyAmount, minSaleAmount, sellMin, sellAmount
             end
           
 
           else
             puts "Cancelling and placing new sell order"
-            sellInfo = revokeAndPlaceNewSell market, minBuyAmount, minSaleAmount, middle, sellAmount
+            sellInfo = revokeAndPlaceNewSell market, minBuyAmount, minSaleAmount, sellMin, sellAmount
           end
         else
           puts "Hashamount is #{sellAmount}, we can't sell less than #{minOrder}"
         end
       else
-        puts "Lowest sell: #{lSale}, our min price: #{middle} = We can't sell!"
+        puts "Lowest sell: #{lSale}, our min price: #{sellMin} = We can't sell!"
         if ((minSaleAmount * 1.2) < sellAmount)
           minSaleAmount = minSaleAmount * 1.2
         end
+        sellInfo = [0,lSale]
       end
 
 
-      if (hBuy < middle)
+      if (hBuy < buyMax)
         #Price is good to buy
         if (minBuyAmount > minOrder)
           minBuyAmount = minBuyAmount * 0.95
@@ -192,13 +202,13 @@ def startTrading #market, hashLeft, btcLeft
             #puts "BuyDiff #{buyDiff} sec #{secBuyDiff}"
             if (buyDiff > 0.000000009 || secBuyDiff > 0.000000011)
               puts "Buy Price is wrong, changing price..."
-              buyInfo = revokeAndPlaceNewBuy market, minBuyAmount, minSaleAmount, middle, buyAmount
+              buyInfo = revokeAndPlaceNewBuy market, minBuyAmount, minSaleAmount, buyMax, buyAmount
             end
 
 
           else
             puts "Cancelling and placing new buy order"
-            buyInfo = revokeAndPlaceNewBuy market, minBuyAmount, minSaleAmount, middle, buyAmount
+            buyInfo = revokeAndPlaceNewBuy market, minBuyAmount, minSaleAmount, buyMax, buyAmount
           end
 
         else
@@ -207,23 +217,24 @@ def startTrading #market, hashLeft, btcLeft
 
 
       else
-        puts "Highest buy: #{hBuy}, our max price: #{middle} = We can't buy!"
+        puts "Highest buy: #{hBuy}, our max price: #{buyMax} = We can't buy!"
         if ((minBuyAmount * 1.2) < buyAmount)
           minBuyAmount = minBuyAmount * 1.2
         end
+        buyInfo = [0,hBuy]
       end
 
       puts "Last order sell #{sellInfo[0]} for #{sellInfo[1]} and buy #{buyInfo[0]} for #{buyInfo[1]}"
       
 
-      distanceToBuy = middle - buyInfo[1]
-      btcLeft = origBtcLeft * (1 - distanceToBuy/0.00004)
+      distanceToBuy = buyMax - buyInfo[1]
+      btcLeft = origBtcLeft * (1 - distanceToBuy/buySpread)
       if btcLeft < 0.0
         btcLeft = 0.0
       end
 
-      distanceToSell = sellInfo[1] - middle
-      hashLeft = origHashLeft * (1 - distanceToSell/0.000015)
+      distanceToSell = sellInfo[1] - sellMin
+      hashLeft = origHashLeft * (1 - distanceToSell/sellSpread)
       if hashLeft < 0.0
         hashLeft = 0.0
       end
@@ -247,7 +258,7 @@ def startTrading #market, hashLeft, btcLeft
   def revokeAndPlaceNewSell(market, minBuyAmount, minSaleAmount, minSale, sellAmount)
     @api.quick_revoke market, "sale"
     orderIDSell = 0
-    ourSellPrice = 1000
+    ourSellPrice = minSale
     updatedOrders = updateOrders market,minBuyAmount,minSaleAmount
     lSale = updatedOrders[0]
     if (lSale > minSale)
@@ -260,7 +271,7 @@ def startTrading #market, hashLeft, btcLeft
   def revokeAndPlaceNewBuy(market, minBuyAmount, minSaleAmount, maxBuy, buyAmount)
     @api.quick_revoke market, "purchase"
     orderIDBuy = 0
-    ourBuyPrice = 0.0000001
+    ourBuyPrice = maxBuy
     updatedOrders = updateOrders market,minBuyAmount,minSaleAmount
     hBuy = updatedOrders[1]
     if (hBuy < maxBuy)
