@@ -5,12 +5,13 @@
       This is the market
     </p>
 
-      <% startDate = 150.days.ago.beginning_of_day 
-        endDate = 20.days.ago.beginning_of_day
-        percentDiffChange = 0.03
-        percentPriceChange = 0.01
-        difficulty = difficultyNow
-        btc_price = btcPriceNow
+      <% startDate = 365.days.ago.beginning_of_day 
+        endDate = 5.days.ago.beginning_of_day
+        percentDiffChange = 0.04
+        percentPriceChange = 0.001
+        difficulty = ActiveSupport::JSON.decode(open("https://blockexplorer.com/api/status?q=getDifficulty").read)["difficulty"].to_f
+        btc_price = ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"].to_f
+        minerPrice = 0.00035
       %>
 
 
@@ -18,7 +19,7 @@
       <%
 
       firstDay = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.00192)/btc_price, commulative: 0.000 }
-      firstDayPrice = { date: startDate, price: 0.000030 }
+      firstDayPrice = { date: startDate, price: minerPrice }
 
       datamodel = []
       fixedmodel = []
@@ -27,17 +28,30 @@
       fixedmodel << firstDayPrice
 
       i = 1
+      d = 0
       j =  (endDate - startDate) / (24 * 3600)
 
       until i > j  do 
-        daysAgo = 150 - i
-        difficulty = difficulty * 1.002
-        btc_price = btc_price * 1.000
-        newProfit = (502914.19/difficulty*btc_price-0.00192)/btc_price
+        daysAgo = 365 - i
+        d+=1
+        if (d == 14)
+          difficulty = difficulty * (1 + percentDiffChange)
+          d = 0
+        end
+
+        btc_price = btc_price * (1 + percentPriceChange)
+
+        %>
+
+        <br>Difficulty: <%= difficulty%>
+        <br>Price: <%= btc_price%>
+
+        <%
+        newProfit = (502914.19/difficulty*btc_price-0.001175)/btc_price
         newCommulative = datamodel[i-1][:commulative] + newProfit
         newDay = { date: daysAgo.days.ago.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfit, commulative: newCommulative }
         datamodel << newDay
-        fixedmodel << { date: daysAgo.days.ago.beginning_of_day, price: 0.000030 }
+        fixedmodel << { date: daysAgo.days.ago.beginning_of_day, price: minerPrice }
         
 
       i +=1;
@@ -48,16 +62,19 @@
 
       coolData = 
       [
-        {name: "s3", data: return_array},
-        {name: "s4", data: return_fixed}
+        {name: "Earnings", data: return_array},
+        {name: "Miner cost", data: return_fixed}
         ]
       %>
 
    
 
       <%= line_chart coolData, library: {curveType: 'function', pointSize: 0, lineWidth: 3 } %>
+
       <br>
       <br>
+      <h2> The Data </h2>
+      <%= coolData %>
   
 
 
