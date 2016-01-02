@@ -52,19 +52,6 @@ def updateOrders(market, minBuy, minSale)
 
 
 
-
-  def sell(market, amount, price)
-    api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-    newOrder = api.trade market, "sale", amount, price
-    newOrderID = newOrder["id"]
-  end
-
-  def buy(market, amount, price)
-    api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-    newOrder = api.trade market, "purchase", amount, price
-    newOrderID = newOrder["id"]
-  end
-
   def checkRemaining(market, orderID)
     api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
     orders = api.order_active market
@@ -86,7 +73,7 @@ def startTrading #market, hashLeft, btcLeft
     @api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
 
     market = 19
-    origHashLeft = 5000
+    origHashLeft = 7000
     origBtcLeft = 1.0
 
     @api.quick_revoke market, "sale"
@@ -95,8 +82,8 @@ def startTrading #market, hashLeft, btcLeft
 
     minBuyAmount = 200
     minSaleAmount = 200
-    sellMin = 0.00037
-    buyMax = 0.000365
+    sellMin = 0.000358
+    buyMax = 0.00035
 
     sellSpread = 0.00005
     buySpread = 0.00004
@@ -104,7 +91,7 @@ def startTrading #market, hashLeft, btcLeft
 
     middle = (sellMin + buyMax) / 2.0
 
-    minOrder = 50
+    minOrder = 93
 
     btcLeft = origBtcLeft
     hashLeft = origHashLeft
@@ -243,6 +230,8 @@ def startTrading #market, hashLeft, btcLeft
       puts "Buy distance from middle: #{distanceToBuy*100000}, new btcLeft: #{btcLeft}, new minBuyAmount #{minBuyAmount}"
       puts "Sell distance from middle: #{distanceToSell*100000}, new hashLeft: #{hashLeft}, new minSaleAmount #{minSaleAmount}"
 
+      total = totalBtcValue market,hBuy
+      puts "####### Total now: #{total} #######"
 
     end
   end
@@ -282,6 +271,13 @@ def startTrading #market, hashLeft, btcLeft
   end
 
 
+  def totalBtcValue(market, hashPrice)
+    #Check initial sell and buy
+    hashBal = hashBalance market
+    btcBal = btcBalance
+    totalValue = btcBal[0] + hashBal[0] * hashPrice
+  end
+
 
 
   def hashBalance(market)
@@ -317,8 +313,7 @@ def startTrading #market, hashLeft, btcLeft
   end
 
   def buy(market, amount, price)
-    api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-    newOrder = api.trade market, "purchase", amount, price
+    newOrder = @api.trade market, "purchase", amount, price
     newOrderID = newOrder["id"] # Is nil if order didn't go through
   end
 
