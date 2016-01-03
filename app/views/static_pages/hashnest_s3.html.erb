@@ -1,0 +1,41 @@
+<% provide(:title, "Hasnest S3 miner statistics") %>
+<%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+
+	<%= render 'layouts/header' %>
+    <h1>Hasnest S3 miner statistics</h1>
+    <p>
+	     <h2>S3 BTC</h2>
+      <%= area_chart Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "s3_btc") %>
+      <h2>S3 USD</h2>
+      <%= area_chart Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "s3_btc * btc_price") %>
+      <h2>S3 return</h2>
+      <%= area_chart Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.00192)/(s3_btc * btc_price)") %>
+
+
+
+        <h2>S3 commulative percent btc income </h2>
+      <% theSet = Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)/0.0012*100")
+        sum = 0
+        result = theSet.map {|x,y| [x, (sum+=y)]}
+        %>
+        <%= area_chart result %>
+
+        <h2>Percent S3 profit btc after selling the S3</h2>
+    
+      <% 
+        sum = 0
+
+        theSet = Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)/0.0012*100")
+        theHashPrice = Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "s3_btc/0.0012*100")
+        theNewSet = Hash[*theSet.map {|x,y| [x, - theHashPrice.values[0] + (sum+=y)]}.flatten(1)]
+        
+        finalSet = theNewSet.merge(theHashPrice){ |k, a_value, b_value| a_value + b_value }
+        %>
+        <%= area_chart finalSet %>
+
+
+
+            <br>
+    </p>
+  </body>
+</html>

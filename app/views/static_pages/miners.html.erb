@@ -1,30 +1,45 @@
-<% provide(:title, "Miners") %>
+<% provide(:title, "Miners profitability") %>
 <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
-    <h1>Market</h1>
+<%= render 'layouts/header' %>
+    <h1>Miners profitability modelling</h1>
     <p>
       This is the market
     </p>
 
-      <% startDate = 365.days.ago.beginning_of_day 
-        endDate = 5.days.ago.beginning_of_day
+        <h2> 4% difficulty increase every 14 days, 50% yearly price increase</h2>
+
+      <% startDate = 1.days.from_now.beginning_of_day 
+        endDate = 365.days.from_now.beginning_of_day
         percentDiffChange = 0.04
-        percentPriceChange = 0.001
+        percentPriceChange = 1.5 ** (1.0/365) - 1.0
         difficulty = ActiveSupport::JSON.decode(open("https://blockexplorer.com/api/status?q=getDifficulty").read)["difficulty"].to_f
         btc_price = ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"].to_f
-        minerPrice = 0.00035
+        minerPrice = Dataset.last.s7_btc
+        minerPriceS5 = Dataset.last.s5_btc
+        minerPriceS4 = Dataset.last.s4_btc
+        minerPriceS3 = Dataset.last.s3_btc
       %>
 
 
 
       <%
 
-      firstDay = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.00192)/btc_price, commulative: 0.000 }
-      firstDayPrice = { date: startDate, price: minerPrice }
+      firstDay = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.0005796)/btc_price/minerPrice, commulative: 0.000 }
+      firstDayS5 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.001175)/btc_price/minerPriceS5, commulative: 0.000 }
+      firstDayS4 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.001625)/btc_price/minerPriceS4, commulative: 0.000 }
+      firstDayS3 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.00192)/btc_price/minerPriceS3, commulative: 0.000 }
+      firstDayPrice = { date: startDate, price: 1.0 }
 
       datamodel = []
+      datamodelS5 = []
+      datamodelS4 = []
+      datamodelS3 = []
       fixedmodel = []
 
       datamodel << firstDay
+      datamodelS5 << firstDayS5
+      datamodelS4 << firstDayS4
+      datamodelS3 << firstDayS3
       fixedmodel << firstDayPrice
 
       i = 1
@@ -32,7 +47,7 @@
       j =  (endDate - startDate) / (24 * 3600)
 
       until i > j  do 
-        daysAgo = 365 - i
+        daysFromNow = i
         d+=1
         if (d == 14)
           difficulty = difficulty * (1 + percentDiffChange)
@@ -43,26 +58,45 @@
 
         %>
 
-        <br>Difficulty: <%= difficulty%>
-        <br>Price: <%= btc_price%>
 
         <%
-        newProfit = (502914.19/difficulty*btc_price-0.001175)/btc_price
+        newProfit = (502914.19/difficulty*btc_price-0.0005796)/btc_price/minerPrice
         newCommulative = datamodel[i-1][:commulative] + newProfit
-        newDay = { date: daysAgo.days.ago.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfit, commulative: newCommulative }
+        newDay = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfit, commulative: newCommulative }
+
+        newProfitS5 = (502914.19/difficulty*btc_price-0.001175)/btc_price/minerPriceS5
+        newCommulativeS5 = datamodelS5[i-1][:commulative] + newProfitS5
+        newDayS5 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS5, commulative: newCommulativeS5 }
+
+        newProfitS4 = (502914.19/difficulty*btc_price-0.001625)/btc_price/minerPriceS4
+        newCommulativeS4 = datamodelS4[i-1][:commulative] + newProfitS4
+        newDayS4 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS4, commulative: newCommulativeS4 }
+
+          newProfitS3 = (502914.19/difficulty*btc_price-0.00192)/btc_price/minerPriceS3
+        newCommulativeS3 = datamodelS3[i-1][:commulative] + newProfitS3
+        newDayS3 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS3, commulative: newCommulativeS3 }
+
         datamodel << newDay
-        fixedmodel << { date: daysAgo.days.ago.beginning_of_day, price: minerPrice }
+        datamodelS5 << newDayS5
+        datamodelS4 << newDayS4
+        datamodelS3 << newDayS3
+        fixedmodel << { date: daysFromNow.days.from_now.beginning_of_day, price: 1.0 }
         
 
       i +=1;
       end
  
       return_array = datamodel.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS5 = datamodelS5.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS4 = datamodelS4.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS3 = datamodelS3.map { |h| h.slice(:date, :commulative).values }
       return_fixed = fixedmodel.map { |h| h.slice(:date, :price).values }
 
       coolData = 
       [
-        {name: "Earnings", data: return_array},
+        {name: "S7", data: return_array},
+        {name: "S5", data: return_arrayS5},
+        {name: "S4", data: return_arrayS4},
         {name: "Miner cost", data: return_fixed}
         ]
       %>
@@ -73,32 +107,327 @@
 
       <br>
       <br>
-      <h2> The Data </h2>
-      <%= coolData %>
-  
+
+
+             <h2> 4% difficulty increase every 14 days, 100% yearly price increase</h2>
+
+      <% startDate = 1.days.from_now.beginning_of_day 
+        endDate = 365.days.from_now.beginning_of_day
+        percentDiffChange = 0.04
+        percentPriceChange = 2 ** (1.0/365) - 1.0
+        difficulty = ActiveSupport::JSON.decode(open("https://blockexplorer.com/api/status?q=getDifficulty").read)["difficulty"].to_f
+        btc_price = ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"].to_f
+        minerPrice = Dataset.last.s7_btc
+        minerPriceS5 = Dataset.last.s5_btc
+        minerPriceS4 = Dataset.last.s4_btc
+        minerPriceS3 = Dataset.last.s3_btc
+      %>
 
 
 
-      <h2>S4 commulative income between <%= startDate %> and <%= endDate %></h2>
-      <% theSet = Dataset.where("created_at >= ?", startDate).where("created_at <= ?", endDate).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
-        sum = 0
-        result = theSet.map {|x,y| [x, (sum+=y)]}
+      <%
+
+      firstDay = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.0005796)/btc_price/minerPrice, commulative: 0.000 }
+      firstDayS5 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.001175)/btc_price/minerPriceS5, commulative: 0.000 }
+      firstDayS4 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.001625)/btc_price/minerPriceS4, commulative: 0.000 }
+      firstDayS3 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.00192)/btc_price/minerPriceS3, commulative: 0.000 }
+      firstDayPrice = { date: startDate, price: 1.0 }
+
+      datamodel = []
+      datamodelS5 = []
+      datamodelS4 = []
+      datamodelS3 = []
+      fixedmodel = []
+
+      datamodel << firstDay
+      datamodelS5 << firstDayS5
+      datamodelS4 << firstDayS4
+      datamodelS3 << firstDayS3
+      fixedmodel << firstDayPrice
+
+      i = 1
+      d = 0
+      j =  (endDate - startDate) / (24 * 3600)
+
+      until i > j  do 
+        daysFromNow = i
+        d+=1
+        if (d == 14)
+          difficulty = difficulty * (1 + percentDiffChange)
+          d = 0
+        end
+
+        btc_price = btc_price * (1 + percentPriceChange)
+
         %>
-        <%= area_chart result %>
 
-        <h2>S4 profit after selling the S4 between <%= startDate %> and <%= endDate %></h2>
-    
-      <% 
-        sum = 0
 
-        theSet = Dataset.where("created_at >= ?", startDate).where("created_at <= ?", endDate).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
-        theHashPrice = Dataset.where("created_at >= ?", startDate).where("created_at <= ?", endDate).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "s4_btc")
-        theNewSet = Hash[*theSet.map {|x,y| [x, - theHashPrice.values[0] + (sum+=y)]}.flatten(1)]
+        <%
+        newProfit = (502914.19/difficulty*btc_price-0.0005796)/btc_price/minerPrice
+        newCommulative = datamodel[i-1][:commulative] + newProfit
+        newDay = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfit, commulative: newCommulative }
+
+        newProfitS5 = (502914.19/difficulty*btc_price-0.001175)/btc_price/minerPriceS5
+        newCommulativeS5 = datamodelS5[i-1][:commulative] + newProfitS5
+        newDayS5 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS5, commulative: newCommulativeS5 }
+
+        newProfitS4 = (502914.19/difficulty*btc_price-0.001625)/btc_price/minerPriceS4
+        newCommulativeS4 = datamodelS4[i-1][:commulative] + newProfitS4
+        newDayS4 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS4, commulative: newCommulativeS4 }
+
+          newProfitS3 = (502914.19/difficulty*btc_price-0.00192)/btc_price/minerPriceS3
+        newCommulativeS3 = datamodelS3[i-1][:commulative] + newProfitS3
+        newDayS3 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS3, commulative: newCommulativeS3 }
+
+        datamodel << newDay
+        datamodelS5 << newDayS5
+        datamodelS4 << newDayS4
+        datamodelS3 << newDayS3
+        fixedmodel << { date: daysFromNow.days.from_now.beginning_of_day, price: 1.0 }
         
-        finalSet = theNewSet.merge(theHashPrice){ |k, a_value, b_value| a_value + b_value }
-        %>
-        <%= area_chart finalSet %>
+
+      i +=1;
+      end
  
+      return_array = datamodel.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS5 = datamodelS5.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS4 = datamodelS4.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS3 = datamodelS3.map { |h| h.slice(:date, :commulative).values }
+      return_fixed = fixedmodel.map { |h| h.slice(:date, :price).values }
+
+      coolData = 
+      [
+        {name: "S7", data: return_array},
+        {name: "S5", data: return_arrayS5},
+        {name: "S4", data: return_arrayS4},
+        {name: "Miner cost", data: return_fixed}
+        ]
+      %>
+
+   
+
+      <%= line_chart coolData, library: {curveType: 'function', pointSize: 0, lineWidth: 3 } %>
+
+      <br>
+      <br>
+
+
+
+
+
+
+
+
+
+      <h2> 2% difficulty increase every 14 days, 0% yearly price increase</h2>
+
+      <% startDate = 1.days.from_now.beginning_of_day 
+        endDate = 365.days.from_now.beginning_of_day
+        percentDiffChange = 0.02
+        percentPriceChange = 1 ** (1.0/365) - 1.0
+        difficulty = ActiveSupport::JSON.decode(open("https://blockexplorer.com/api/status?q=getDifficulty").read)["difficulty"].to_f
+        btc_price = ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"].to_f
+        minerPrice = Dataset.last.s7_btc
+        minerPriceS5 = Dataset.last.s5_btc
+      %>
+
+
+
+      <%
+
+      firstDay = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.0005796)/btc_price/minerPrice, commulative: 0.000 }
+      firstDayS5 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.001175)/btc_price/minerPriceS5, commulative: 0.000 }
+      firstDayS4 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.001625)/btc_price/minerPriceS4, commulative: 0.000 }
+      firstDayS3 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.00192)/btc_price/minerPriceS3, commulative: 0.000 }
+      firstDayPrice = { date: startDate, price: 1.0 }
+
+      datamodel = []
+      datamodelS5 = []
+      datamodelS4 = []
+      datamodelS3 = []
+      fixedmodel = []
+
+      datamodel << firstDay
+      datamodelS5 << firstDayS5
+      datamodelS4 << firstDayS4
+      datamodelS3 << firstDayS3
+      fixedmodel << firstDayPrice
+
+      i = 1
+      d = 0
+      j =  (endDate - startDate) / (24 * 3600)
+
+      until i > j  do 
+        daysFromNow = i
+        d+=1
+        if (d == 14)
+          difficulty = difficulty * (1 + percentDiffChange)
+          d = 0
+        end
+
+        btc_price = btc_price * (1 + percentPriceChange)
+
+        %>
+
+
+        <%
+        newProfit = (502914.19/difficulty*btc_price-0.0005796)/btc_price/minerPrice
+        newCommulative = datamodel[i-1][:commulative] + newProfit
+        newDay = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfit, commulative: newCommulative }
+
+        newProfitS5 = (502914.19/difficulty*btc_price-0.001175)/btc_price/minerPriceS5
+        newCommulativeS5 = datamodelS5[i-1][:commulative] + newProfitS5
+        newDayS5 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS5, commulative: newCommulativeS5 }
+
+        newProfitS4 = (502914.19/difficulty*btc_price-0.001625)/btc_price/minerPriceS4
+        newCommulativeS4 = datamodelS4[i-1][:commulative] + newProfitS4
+        newDayS4 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS4, commulative: newCommulativeS4 }
+
+          newProfitS3 = (502914.19/difficulty*btc_price-0.00192)/btc_price/minerPriceS3
+        newCommulativeS3 = datamodelS3[i-1][:commulative] + newProfitS3
+        newDayS3 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS3, commulative: newCommulativeS3 }
+
+        datamodel << newDay
+        datamodelS5 << newDayS5
+        datamodelS4 << newDayS4
+        datamodelS3 << newDayS3
+        fixedmodel << { date: daysFromNow.days.from_now.beginning_of_day, price: 1.0 }
+        
+
+      i +=1;
+      end
+ 
+      return_array = datamodel.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS5 = datamodelS5.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS4 = datamodelS4.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS3 = datamodelS3.map { |h| h.slice(:date, :commulative).values }
+      return_fixed = fixedmodel.map { |h| h.slice(:date, :price).values }
+
+      coolData = 
+      [
+        {name: "S7", data: return_array},
+        {name: "S5", data: return_arrayS5},
+        {name: "S4", data: return_arrayS4},
+        {name: "Miner cost", data: return_fixed}
+        ]
+      %>
+
+   
+
+      <%= line_chart coolData, library: {curveType: 'function', pointSize: 0, lineWidth: 3 } %>
+
+
+      <br>
+      <br>
+
+
+
+
+      <h2> 4% difficulty increase every 14 days, 200% yearly price increase</h2>
+
+      <% startDate = 1.days.from_now.beginning_of_day 
+        endDate = 365.days.from_now.beginning_of_day
+        percentDiffChange = 0.04
+        percentPriceChange = 3 ** (1.0/365) - 1.0
+        difficulty = ActiveSupport::JSON.decode(open("https://blockexplorer.com/api/status?q=getDifficulty").read)["difficulty"].to_f
+        btc_price = ActiveSupport::JSON.decode(open("https://www.bitstamp.net/api/ticker/").read)["bid"].to_f
+        minerPrice = Dataset.last.s7_btc
+        minerPriceS5 = Dataset.last.s5_btc
+      %>
+
+
+
+      <%
+
+      firstDay = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.0005796)/btc_price/minerPrice, commulative: 0.000 }
+      firstDayS5 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.001175)/btc_price/minerPriceS5, commulative: 0.000 }
+      firstDayS4 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.001625)/btc_price/minerPriceS4, commulative: 0.000 }
+      firstDayS3 = { date: startDate, difficulty: difficulty, btc_price: btc_price, profit: (502914.19/difficulty*btc_price-0.00192)/btc_price/minerPriceS3, commulative: 0.000 }
+      firstDayPrice = { date: startDate, price: 1.0 }
+
+      datamodel = []
+      datamodelS5 = []
+      datamodelS4 = []
+      datamodelS3 = []
+      fixedmodel = []
+
+      datamodel << firstDay
+      datamodelS5 << firstDayS5
+      datamodelS4 << firstDayS4
+      datamodelS3 << firstDayS3
+      fixedmodel << firstDayPrice
+
+      i = 1
+      d = 0
+      j =  (endDate - startDate) / (24 * 3600)
+
+      until i > j  do 
+        daysFromNow = i
+        d+=1
+        if (d == 14)
+          difficulty = difficulty * (1 + percentDiffChange)
+          d = 0
+        end
+
+        btc_price = btc_price * (1 + percentPriceChange)
+
+        %>
+
+
+        <%
+        newProfit = (502914.19/difficulty*btc_price-0.0005796)/btc_price/minerPrice
+        newCommulative = datamodel[i-1][:commulative] + newProfit
+        newDay = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfit, commulative: newCommulative }
+
+        newProfitS5 = (502914.19/difficulty*btc_price-0.001175)/btc_price/minerPriceS5
+        newCommulativeS5 = datamodelS5[i-1][:commulative] + newProfitS5
+        newDayS5 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS5, commulative: newCommulativeS5 }
+
+        newProfitS4 = (502914.19/difficulty*btc_price-0.001625)/btc_price/minerPriceS4
+        newCommulativeS4 = datamodelS4[i-1][:commulative] + newProfitS4
+        newDayS4 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS4, commulative: newCommulativeS4 }
+
+          newProfitS3 = (502914.19/difficulty*btc_price-0.00192)/btc_price/minerPriceS3
+        newCommulativeS3 = datamodelS3[i-1][:commulative] + newProfitS3
+        newDayS3 = { date: daysFromNow.days.from_now.beginning_of_day, difficulty: difficulty, btc_price: btc_price, profit: newProfitS3, commulative: newCommulativeS3 }
+
+        datamodel << newDay
+        datamodelS5 << newDayS5
+        datamodelS4 << newDayS4
+        datamodelS3 << newDayS3
+        fixedmodel << { date: daysFromNow.days.from_now.beginning_of_day, price: 1.0 }
+        
+
+      i +=1;
+      end
+ 
+      return_array = datamodel.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS5 = datamodelS5.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS4 = datamodelS4.map { |h| h.slice(:date, :commulative).values }
+      return_arrayS3 = datamodelS3.map { |h| h.slice(:date, :commulative).values }
+      return_fixed = fixedmodel.map { |h| h.slice(:date, :price).values }
+
+      coolData = 
+      [
+        {name: "S7", data: return_array},
+        {name: "S5", data: return_arrayS5},
+        {name: "S4", data: return_arrayS4},
+        {name: "S3", data: return_arrayS3},
+        {name: "Miner cost", data: return_fixed}
+        ]
+      %>
+
+   
+
+      <%= line_chart coolData, library: {curveType: 'function', pointSize: 0, lineWidth: 3 } %>
+
+
+
+      <br>
+      <br>
+  
+    
+
 
       <br>
     </p>

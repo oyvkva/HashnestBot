@@ -1,6 +1,7 @@
-<% provide(:title, "Market") %>
+<% provide(:title, "Hashnest Market") %>
 <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
-    <h1>Market</h1>
+<%= render 'layouts/header' %>
+    <h1>Hashnest Market</h1>
     <p>
       This is the market
     </p>
@@ -322,97 +323,7 @@
   
       <br>
 
-        <%
-      
         
-        coolData = [
-        {name: "s3", data: Dataset.group_by_day( :created_at, "avg", "s3_btc")},
-        {name: "s4", data: Dataset.group_by_day( :created_at, "avg", "s4_btc")},
-        {name: "s5", data: Dataset.group_by_day( :created_at, "avg", "s5_btc")},
-        {name: "s7", data: Dataset.group_by_day( :created_at, "avg", "s7_btc")}
-        ]
-
-        %>
-
-        <%= line_chart coolData, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
-
-        <br>
-        <br>
-        <h2> Volumes </h2>
-
-        <%
-        coolDataTwo = [
-        {name: "s5 buy", data: Dataset.group_by_minute( :created_at, "avg", "s5_buyvolume")},
-        {name: "s5 sell", data: Dataset.group_by_minute( :created_at, "avg", "s5_sellvolume")},
-        {name: "s7 buy", data: Dataset.group_by_minute( :created_at, "avg", "s7_buyvolume")},
-          {name: "s7 sell", data: Dataset.group_by_minute( :created_at, "avg", "s7_sellvolume")}
-        ]
-
-        %>
-
-        <%= line_chart coolDataTwo, library: {curveType: "none", pointSize: 0, lineWidth: 3} %>
-
-
-      <br>
-      <h2>BTC-USD</h2>
-      <%= area_chart Dataset.group_by_day( :created_at, "avg", "btc_price") %>
-      <h2>Difficulty</h2>
-      <%= area_chart Dataset.group_by_day( :created_at, "avg", "difficulty") %>
-
-      <h2>S3 BTC</h2>
-      <%= area_chart Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "s3_btc") %>
-      <h2>S3 USD</h2>
-      <%= area_chart Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "s3_btc * btc_price") %>
-      <h2>S3 return</h2>
-      <%= area_chart Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.00192)/(s3_btc * btc_price)") %>
-      <h2>S4 BTC</h2>
-      <%= area_chart Dataset.where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "s4_btc") %>
-      <h2>S4 USD</h2>
-      <%= area_chart Dataset.where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "s4_btc * btc_price") %>
-      <h2>S4 return</h2>
-      <%= area_chart Dataset.where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(s4_btc * btc_price)") %>
-
-      <h2>S4 commulative income</h2>
-      <% theSet = Dataset.where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
-        sum = 0
-        result = theSet.map {|x,y| [x, (sum+=y)]}
-        %>
-        <%= area_chart result %>
-
-        <h2>S4 profit after selling the S4</h2>
-    
-      <% 
-        sum = 0
-
-        theSet = Dataset.where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)")
-        theHashPrice = Dataset.where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "s4_btc")
-        theNewSet = Hash[*theSet.map {|x,y| [x, - theHashPrice.values[0] + (sum+=y)]}.flatten(1)]
-        
-        finalSet = theNewSet.merge(theHashPrice){ |k, a_value, b_value| a_value + b_value }
-        %>
-        <%= area_chart finalSet %>
- 
-
-      <h2>S5 BTC</h2>
-      <%= area_chart Dataset.where("s5_btc > ?", 0.0).group_by_day( :created_at, "avg", "s5_btc") %>
-      <h2>S5 USD</h2>
-      <%= area_chart Dataset.where("s5_btc > ?", 0.0).group_by_day( :created_at, "avg", "s5_btc * btc_price") %>
-      <h2>S5 return</h2>
-      <%= area_chart Dataset.where("s5_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001175)/(s5_btc * btc_price)") %>
-
-
-
-
-  
-
-
-      <h2>S7 BTC</h2>
-      <%= area_chart Dataset.where("s7_btc > ?", 0.0).group_by_day( :created_at, "avg", "s7_btc") %>
-      <h2>S7 USD</h2>
-      <%= area_chart Dataset.where("s7_btc > ?", 0.0).group_by_day( :created_at, "avg", "s7_btc * btc_price") %>
-      <h2>S7 return</h2>
-      <%= area_chart Dataset.where("s7_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.000580)/(s7_btc * btc_price)") %>
-      <br>
       <br>
     </p>
   </body>

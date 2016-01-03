@@ -1,69 +1,9 @@
 module BotHelper
 
-#include <cstdlib>
+# Here is all the logic for the bot
+# It's quite messy, I stopped developoing this seeing how hard it would be to make a profit with this bot
 
 
-def updateOrders(market, minBuy, minSale)
-
-    minSaleAmountToConsider = minSale
-    minBuyAmountToConsider = minBuy
-    
-    api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-    orders = api.currency_market_orders market
-
-    purchase = orders["purchase"]
-    sale = orders["sale"]
-
-    secSale = 1000
-    lSale = 1000
-    hBuy = 0
-    secBuy = 0
-
-    sale.each do |p|
-      price = Float(p["ppc"])
-      amount = Integer(p["amount"])
-      if (lSale > price && amount >= minSaleAmountToConsider)
-        lSale = price
-      end
-      if (secSale > price && price > lSale && amount >= minSaleAmountToConsider)
-        secSale = price
-      end
-
-    end
-
-
-    purchase.each do |p|
-      price = Float(p["ppc"])
-      amount = Integer(p["amount"])
-      if (hBuy < price && amount >= minBuyAmountToConsider)
-        hBuy = price
-      end
-
-      if (secBuy < price && price < hBuy && amount >= minBuyAmountToConsider)
-        secBuy = price
-      end
-    end
-
-    spread = lSale - hBuy
-    return lSale, hBuy, secSale, secBuy
-    
-  end
-
-
-
-
-  def checkRemaining(market, orderID)
-    api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-    orders = api.order_active market
-    remaining = 0
-    orders.each do |p|
-      amount = Integer(p["amount"])
-      if (Integer(p["id"]) == orderID)
-        remaining = amount
-      end
-    end
-    remaining
-  end
 
 
 
@@ -239,6 +179,54 @@ def startTrading #market, hashLeft, btcLeft
 
 
 
+def updateOrders(market, minBuy, minSale)
+
+    minSaleAmountToConsider = minSale
+    minBuyAmountToConsider = minBuy
+    
+    api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
+    orders = api.currency_market_orders market
+
+    purchase = orders["purchase"]
+    sale = orders["sale"]
+
+    secSale = 1000
+    lSale = 1000
+    hBuy = 0
+    secBuy = 0
+
+    sale.each do |p|
+      price = Float(p["ppc"])
+      amount = Integer(p["amount"])
+      if (lSale > price && amount >= minSaleAmountToConsider)
+        lSale = price
+      end
+      if (secSale > price && price > lSale && amount >= minSaleAmountToConsider)
+        secSale = price
+      end
+
+    end
+
+
+    purchase.each do |p|
+      price = Float(p["ppc"])
+      amount = Integer(p["amount"])
+      if (hBuy < price && amount >= minBuyAmountToConsider)
+        hBuy = price
+      end
+
+      if (secBuy < price && price < hBuy && amount >= minBuyAmountToConsider)
+        secBuy = price
+      end
+    end
+
+    spread = lSale - hBuy
+    return lSale, hBuy, secSale, secBuy
+    
+  end
+
+
+
 
 
 
@@ -330,22 +318,6 @@ def startTrading #market, hashLeft, btcLeft
   end
 
 
-
-  # Not used methods
-  def revokeLowestSale(market)
-    orders = @api.order_active market
-    cancelID = 0
-    lSale = 1000
-    orders.each do |p|
-      price = Float(p["ppc"])
-      category = (p["category"])
-      if (lSale > price && category == "sale")
-        lSale = price
-        cancelID = Integer(p["id"])
-      end
-  end
-  puts api.revoke_order cancelID
-end
 
 
 end

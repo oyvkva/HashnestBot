@@ -8,6 +8,10 @@ class StaticPagesController < ApplicationController
   def market
   end
 
+  def hashnest_s7
+  end
+  
+
   def fetch_excel_data
     ods = Roo::OpenOffice.new("#{Rails.root}/public/testsheet.ods")
     2.upto(356) do |line| 
