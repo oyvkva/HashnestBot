@@ -1,14 +1,17 @@
 <header class="navbar navbar-fixed-top navbar-inverse">
   <div class="container">
+  <%= link_to "Cloud Mining", root_path, id: "logo" %>
+    
     <nav>
+
       <ul class="nav navbar-nav navbar-right">
-        <%= link_to "Home", root_path %> - 
-        <%= link_to "Market", market_path %> - 
-        <%= link_to "Miners", miners_path %> -
-        <%= link_to "Hashnest S7", hashnest_s7_path %>
-        <%= link_to "Hashnest S5", hashnest_s5_path %>
-        <%= link_to "Hashnest S4", hashnest_s4_path %>
-        <%= link_to "Hashnest S3", hashnest_s3_path %>
+        <li><%= link_to "Home", root_path %> </li>
+        <li><%= link_to "Market", market_path %> </li> 
+        <li><%= link_to "Miners", miners_path %> </li>
+        <li><%= link_to "Hashnest S7", hashnest_s7_path %> </li>
+        <li><%= link_to "Hashnest S5", hashnest_s5_path %> </li>
+        <li><%= link_to "Hashnest S4", hashnest_s4_path %> </li>
+        <li><%= link_to "Hashnest S3", hashnest_s3_path %> </li>
         <br><br>
         
       </ul>

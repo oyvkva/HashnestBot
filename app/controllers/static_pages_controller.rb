@@ -10,6 +10,12 @@ class StaticPagesController < ApplicationController
 
   def hashnest_s7
   end
+
+  def miners
+    @diffChange = params[:percentDiffChange]
+    @priceChange = params[:percentPriceChange]
+  end
+
   
 
   def fetch_excel_data
