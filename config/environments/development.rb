@@ -6,9 +6,6 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
-  # replace this with your tracker code
-  GA.tracker = "UA-71975820-1"
-  GA.script_source = :doubleclick
 
   # Do not eager load code on boot.
   config.eager_load = false
