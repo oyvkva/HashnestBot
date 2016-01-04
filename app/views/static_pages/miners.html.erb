@@ -23,7 +23,7 @@
       %>
 
       
-    <%= form_tag "/static_pages_controller/postminer" do %>
+    <%= form_tag "miners" do %>
     Percent difficulty change: (every 14 days) <%= text_field_tag "percentDiffChange", @diffChange %>% &nbsp;&nbsp;&nbsp;&nbsp;   
     Percent price change next 365 days: <%= text_field_tag "percentPriceChange", @priceChange %>%    &nbsp;&nbsp;&nbsp;&nbsp;
     <%= submit_tag "Update model" %>

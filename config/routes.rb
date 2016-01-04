@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   get    'hashnest_s5' => 'static_pages#hashnest_s5'
   get    'hashnest_s4' => 'static_pages#hashnest_s4'
   get    'hashnest_s3' => 'static_pages#hashnest_s3'
-  post '/static_pages_controller/postminer' => 'static_pages#miners'
+  post '/miners' => 'static_pages#miners'
 end
