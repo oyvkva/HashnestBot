@@ -3,8 +3,8 @@ Rails.application.configure do
 
 
   # replace this with your tracker code
-  GA.tracker = "UA-71975820-1"
-  GA.script_source = :doubleclick
+  #GA.tracker = "UA-71975820-1"
+  #GA.script_source = :doubleclick
 
   # Code is not reloaded between requests.
   config.cache_classes = true
