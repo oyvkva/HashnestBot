@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/alexpeattie/heroku_secrets.git
+  revision: 717af8e0acf399bc88d2c8c1a7e230023942af0f
+  specs:
+    heroku_secrets (0.0.2)
+
+GIT
   remote: git://github.com/yinchangxin/hashnest-api.git
   revision: 59c9d85f05370a4a1b30581ba30caade1d3bf836
   specs:
@@ -103,6 +109,8 @@ GEM
     guard-minitest (2.3.1)
       guard (~> 2.0)
       minitest (>= 3.0)
+    haml (4.0.7)
+      tilt
     hirb (0.7.3)
     i18n (0.7.0)
     instance (0.2.0)
@@ -272,7 +280,9 @@ DEPENDENCIES
   dateslices
   google-analytics-rails
   guard-minitest (= 2.3.1)
+  haml (~> 4.0)
   hashnest!
+  heroku_secrets!
   irbtools
   jbuilder (= 2.2.3)
   jquery-rails (= 4.0.3)

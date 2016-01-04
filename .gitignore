@@ -8,6 +8,7 @@
 /.bundle
 
 .DS_Store
+/config/secrets.yml
 
 # Ignore the default SQLite database.
 /db/*.sqlite3

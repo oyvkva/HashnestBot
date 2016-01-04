@@ -8,9 +8,15 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
   </head>
+  
+
   <body>
   <%= render 'layouts/header' %>
     <%= yield %>
+
+    <div class="comments">
+    <%= render :partial => "shared/disqus", :locals => { title: "Cool page" } %>
+    </div>
     <%= render 'layouts/footer' %>
   </body>
 </html>
