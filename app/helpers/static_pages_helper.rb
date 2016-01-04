@@ -79,7 +79,6 @@ module StaticPagesHelper
     difficulty = ActiveSupport::JSON.decode(open("https://blockexplorer.com/api/status?q=getDifficulty").read)["difficulty"]
     test = Dataset.create(difficulty: difficulty, btc_price: btc_price, s3_btc: s3_btc, s4_btc: s4_btc, s5_btc: s5_btc, s7_btc: s7_btc, s3_buyvolume: s3_buyvolume, s3_sellvolume: s3_sellvolume, s4_buyvolume: s4_buyvolume, s4_sellvolume: s4_sellvolume, s5_buyvolume: s5_buyvolume, s5_sellvolume: s5_sellvolume, s7_buyvolume: s7_buyvolume, s7_sellvolume: s7_sellvolume)
   
-    checkPrices
 
   end
 
