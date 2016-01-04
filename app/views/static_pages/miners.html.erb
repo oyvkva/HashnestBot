@@ -3,9 +3,29 @@
     <h1>Miners profitability modeling</h1>
     <p>
     <center>
+
+       <% if !is_number?( @diffChange )
+        @diffChange = 2
+      else 
+        if ( Float(@diffChange) < - 75 || Float(@diffChange) > 400)
+          @diffChange = 2
+        end
+      end
+
+    if !is_number?( @priceChange )
+      @priceChange = 0 
+      else 
+        if ( Float(@priceChange) < - 100 || Float(@priceChange) > 1000000)
+          @priceChange = 0
+        end
+      end
+    
+      %>
+
+      
     <%= form_tag "/static_pages_controller/postminer" do %>
-    Percent difficulty change: (Every 14 days) <%= text_field_tag "percentDiffChange", "2" %>% &nbsp;&nbsp;&nbsp;&nbsp;   
-    Percent price change next 365 days: <%= text_field_tag "percentPriceChange", "50" %>%    &nbsp;&nbsp;&nbsp;&nbsp;
+    Percent difficulty change: (every 14 days) <%= text_field_tag "percentDiffChange", @diffChange %>% &nbsp;&nbsp;&nbsp;&nbsp;   
+    Percent price change next 365 days: <%= text_field_tag "percentPriceChange", @priceChange %>%    &nbsp;&nbsp;&nbsp;&nbsp;
     <%= submit_tag "Update model" %>
     <% end 
 
@@ -18,13 +38,7 @@
 
     </p>
 
-    <% if @diffChange == nil
-      @diffChange = 2 
-    end
-    if @priceChange == nil
-      @priceChange = 50 
-    end
-      %>
+ 
 
         <h2> <%= @diffChange %>% difficulty increase every 14 days, <%= @priceChange %>% yearly price increase</h2>
 

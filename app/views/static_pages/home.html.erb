@@ -7,7 +7,10 @@
 
       <br>
       <br>
-  
+      
+
+      Here is test:
+      <%= ENV['HASHNEST_USERNAME'] %>
 
 
       <h2> Miner prices in USD </h2>
@@ -64,14 +67,14 @@
 
 
 
-        <h2> Buy/sell Volumes S5 and S7 </h2>
+        <h2> Miner daily profit in percent </h2>
 
         <%
         coolDataTwo = [
-        {name: "s5 buy", data: Dataset.group_by_hour( :created_at, "avg", "s5_buyvolume")},
-        {name: "s5 sell", data: Dataset.group_by_hour( :created_at, "avg", "s5_sellvolume")},
-        {name: "s7 buy", data: Dataset.group_by_hour( :created_at, "avg", "s7_buyvolume")},
-          {name: "s7 sell", data: Dataset.group_by_hour( :created_at, "avg", "s7_sellvolume")}
+        {name: "s7", data: Dataset.where("created_at >= ?", 180.day.ago.utc).where("s7_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.000580)/(s7_btc * btc_price)*100")},
+        {name: "s5", data: Dataset.where("created_at >= ?", 180.day.ago.utc).where("s5_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001175)/(s5_btc * btc_price)*100")},
+        {name: "s4", data: Dataset.where("created_at >= ?", 180.day.ago.utc).where("s4_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(s4_btc * btc_price)*100")},
+          {name: "s3", data: Dataset.where("created_at >= ?", 180.day.ago.utc).where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.00192)/(s3_btc * btc_price)*100")} 
         ]
 
         %>

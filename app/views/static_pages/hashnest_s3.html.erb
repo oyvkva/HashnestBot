@@ -19,7 +19,7 @@
 
 
         <h2>S3 commulative percent btc income </h2>
-      <% theSet = Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)/0.0012*100")
+      <% theSet = Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.00192)/(btc_price)/0.0012*100")
         sum = 0
         result = theSet.map {|x,y| [x, (sum+=y)]}
         %>
@@ -30,7 +30,7 @@
       <% 
         sum = 0
 
-        theSet = Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.001625)/(btc_price)/0.0012*100")
+        theSet = Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "(502914.19/difficulty*btc_price-0.00192)/(btc_price)/0.0012*100")
         theHashPrice = Dataset.where("s3_btc > ?", 0.0).group_by_day( :created_at, "avg", "s3_btc/0.0012*100")
         theNewSet = Hash[*theSet.map {|x,y| [x, - theHashPrice.values[0] + (sum+=y)]}.flatten(1)]
         

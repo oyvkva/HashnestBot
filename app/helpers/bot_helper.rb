@@ -10,8 +10,8 @@ module BotHelper
 # Starts buying and selling
 def startTrading #market, hashLeft, btcLeft
 
-    @api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-
+    @api = Hashnest::API.new(Rails.application.secrets.hashnest_username, Rails.application.secrets.hasnest_api_key, Rails.application.secrets.hashnest_api_secret)
+  
     market = 19
     origHashLeft = 7000
     origBtcLeft = 1.0
@@ -184,8 +184,7 @@ def updateOrders(market, minBuy, minSale)
     minSaleAmountToConsider = minSale
     minBuyAmountToConsider = minBuy
     
-    api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-    orders = api.currency_market_orders market
+    orders = @api.currency_market_orders market
 
     purchase = orders["purchase"]
     sale = orders["sale"]

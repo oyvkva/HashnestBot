@@ -2,8 +2,8 @@ module StaticPagesHelper
 
   require 'open-uri'
 
-  def adding(a=1,b=2)
-    c = a + b
+  def is_number? string
+  true if Float(string) rescue false
   end
 
   def updateOrdersDatabase
@@ -15,11 +15,17 @@ module StaticPagesHelper
     spread = 0
 
     Order.delete_all
-    api = Hashnest::API.new("oyvind", "KXRQLP4GDEg0UKYGk5hpIafWvgHBreWUn6SzieaD", "8GyWjxTTeIDETiBJvmkCGOTWEWn8Dw9q33uhsEs2")
-    @S7orders = api.currency_market_orders "20"
-    @S5orders = api.currency_market_orders "19"
-    @S4orders = api.currency_market_orders "18"
-    @S3orders = api.currency_market_orders "15"
+
+
+    Rails.application.secrets.hashnest_username
+    Rails.application.secrets.hasnest_api_key
+    Rails.application.secrets.hashnest_api_secret
+
+    @api = Hashnest::API.new(Rails.application.secrets.hashnest_username, Rails.application.secrets.hasnest_api_key, Rails.application.secrets.hashnest_api_secret)
+    @S7orders = @api.currency_market_orders "20"
+    @S5orders = @api.currency_market_orders "19"
+    @S4orders = @api.currency_market_orders "18"
+    @S3orders = @api.currency_market_orders "15"
 
     fillOrders @S7orders, "20"
     fillOrders @S5orders, "19"
