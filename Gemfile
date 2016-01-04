@@ -16,7 +16,6 @@ gem "chartkick"
 gem 'dateslices'
 gem 'roo'
 gem 'haml', '~> 4.0'
-gem 'heroku_secrets', github: 'alexpeattie/heroku_secrets'
 
 group :development, :test do
   gem 'sqlite3',     '1.3.9'
