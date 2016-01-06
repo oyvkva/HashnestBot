@@ -16,6 +16,7 @@ gem "chartkick"
 gem 'dateslices'
 gem 'roo'
 gem 'haml', '~> 4.0'
+gem "sidekiq"
 
 group :development, :test do
   gem 'sqlite3',     '1.3.9'

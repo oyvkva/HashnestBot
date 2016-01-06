@@ -1,2 +1,46 @@
-<h1>Bot#start</h1>
-<p>Find me in app/views/bot/start.html.erb</p>
+<h1>Hashnest bot</h1>
+<center>
+Use this bot at your own risk, start out with an account with only an amount of btc or hash you are willing to loose.<br>
+The bot is not profitable without tweaking parameters to fit the market. It trades around the value of Trading Price, selling above it and buying below.
+<br><br>
+Run: bundle exec sidekiq <br>
+Then start the bot and watch the logs in that window.<br><br>
+<% if !@market
+    @market = 19
+end
+
+if !@hashLeft
+    @hashLeft = 1000.0
+end
+
+if !@btcLeft
+    @btcLeft = 0.5
+end
+
+if !@tradingPrice
+    @tradingPrice = 0.00035302
+end
+
+
+
+%>
+
+<br>
+<br>
+<br>
+    <%= form_tag "" do %>
+
+
+    Market <%= text_field_tag "market", @market %> &nbsp;&nbsp;&nbsp;&nbsp;   
+    Hash left: <%= text_field_tag "hashLeft", @hashLeft %>    &nbsp;&nbsp;&nbsp;&nbsp;
+    Btc left: <%= text_field_tag "btcLeft", @btcLeft %>    &nbsp;&nbsp;&nbsp;&nbsp;
+    TradingPrice <%= text_field_tag "tradingPrice", @tradingPrice %>   &nbsp;&nbsp;&nbsp;&nbsp;<br>
+    <%= submit_tag "Run" %>
+    <% end %>
+
+
+
+
+    <%= form_tag "" do %>
+    <%= submit_tag "Stop" %>
+    <% end %>

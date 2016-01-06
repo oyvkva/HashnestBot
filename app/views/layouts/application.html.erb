@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-     <%= analytics_init if Rails.env.production? %>
-
 </script>
 
-    <title><%= yield(:title) %> | Bitcoin Mining</title>
+    <title>Hashnest Bot</title>
     <%= stylesheet_link_tag    'application', media: 'all',
                                               'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
@@ -14,12 +12,9 @@
   
 
   <body>
-  <%= render 'layouts/header' %>
     <%= yield %>
 
-    <div class="comments">
-    <%= render :partial => "shared/disqus", :locals => { title: "Cool page" } %>
+
     </div>
-    <%= render 'layouts/footer' %>
   </body>
 </html>
