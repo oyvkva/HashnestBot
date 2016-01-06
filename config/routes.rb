@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'bot/start'
+
   get 'bot/info'
 
   root 'static_pages#home'
